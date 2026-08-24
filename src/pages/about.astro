@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../data/site';
+---
+
+<BaseLayout
+  title={`About | ${siteConfig.name}`}
+  description="Learn how the site is designed for speed, search traffic, and ad-supported utility pages."
+>
+  <section class="hero">
+    <p class="eyebrow">About the site</p>
+    <h1>Built for speed, clarity, and repeat visits.</h1>
+    <p class="lead">
+      Toolshack is a utility site built around search intent. Every page answers one small task as
+      quickly as possible, with minimal JavaScript and a layout that stays readable on mobile.
+    </p>
+  </section>
+
+  <section class="section card-grid">
+    <article class="content-card">
+      <h2>Why this format works</h2>
+      <p>
+        Utility pages tend to rank when they are fast, specific, and easy to understand from the
+        search results page. That is why each tool gets its own landing page.
+      </p>
+    </article>
+    <article class="content-card">
+      <h2>How ads fit in</h2>
+      <p>
+        Ad placements are kept separate from the tool logic, which lets you turn them on after
+        policy pages and content depth are in place.
+      </p>
+    </article>
+    <article class="content-card">
+      <h2>What comes next</h2>
+      <p>
+        Add more tools in the same pattern: one intent, one page, one fast interaction, and one
+        clear internal link back to the hub.
+      </p>
+    </article>
+  </section>
+</BaseLayout>

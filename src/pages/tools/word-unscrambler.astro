@@ -1,0 +1,178 @@
+---
+import AdSlot from '../../components/AdSlot.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { wordList } from '../../data/word-list';
+import { siteConfig } from '../../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Word Unscrambler',
+  applicationCategory: 'ReferenceApplication',
+  operatingSystem: 'Web',
+  description: 'Find common English words from a set of scrambled letters.',
+};
+---
+
+<BaseLayout title={`Word Unscrambler | ${siteConfig.name}`} description="Unscramble words." schema={schema}>
+  <section class="tool-page">
+    <div class="hero compact">
+      <p class="eyebrow">Text</p>
+      <h1>Word Unscrambler</h1>
+    </div>
+
+    <section class="content-card tool-explainer">
+      <p class="eyebrow">How to use</p>
+      <h2>Turn scrambled letters into useful word matches</h2>
+      <p>Enter letters in any order, then set a minimum word length and result limit. The tool scans a large word list and returns matches you can build from your letters.</p>
+      <p>Use it for games, writing prompts, and quick idea generation. Adjust the sliders when you want broader results or tighter, high-signal matches.</p>
+    </section>
+
+    <AdSlot label="Ad" />
+
+    <div class="tool-shell word-shell">
+      <section class="tool-panel stack" data-word-tool>
+        <label>
+          Letters
+          <textarea data-input placeholder="Example: p l a n e t">planet</textarea>
+        </label>
+
+        <div class="field-grid">
+          <label>
+            Min length
+            <input type="range" min="2" max="12" value="3" data-min-length />
+            <span class="field-hint"><strong data-min-length-value>3</strong> letters</span>
+          </label>
+          <label>
+            Limit
+            <input type="range" min="10" max="100" value="30" data-limit />
+            <span class="field-hint"><strong data-limit-value>30</strong> results</span>
+          </label>
+        </div>
+
+        <div class="tool-actions">
+          <button type="button" class="primary" data-search>Find words</button>
+          <button type="button" class="secondary" data-clear>Clear</button>
+        </div>
+
+        <div class="result-panel">
+          <p class="eyebrow">Matches</p>
+          <div class="result-meta">
+            <span class="chip" data-count>0 matches</span>
+            <span class="chip" data-exact>0 exact words</span>
+          </div>
+          <div class="password-list" data-results></div>
+          <p class="field-hint" data-copy-status>Click any result to copy it.</p>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <script is:inline define:vars={{ words: wordList }}>
+    const root = document.querySelector('[data-word-tool]');
+
+    if (root) {
+      const input = root.querySelector('[data-input]');
+      const minLength = root.querySelector('[data-min-length]');
+      const minLengthValue = root.querySelector('[data-min-length-value]');
+      const limit = root.querySelector('[data-limit]');
+      const limitValue = root.querySelector('[data-limit-value]');
+      const search = root.querySelector('[data-search]');
+      const clear = root.querySelector('[data-clear]');
+      const results = root.querySelector('[data-results]');
+      const count = root.querySelector('[data-count]');
+      const exact = root.querySelector('[data-exact]');
+      const copyStatus = root.querySelector('[data-copy-status]');
+      const LIMIT_DEFAULT = 30;
+      const LIMIT_MAX = 100;
+
+      const normalize = (value) => value.toLowerCase().replace(/[^a-z]/g, '');
+      const frequency = (value) => [...normalize(value)].reduce((accumulator, letter) => {
+        accumulator[letter] = (accumulator[letter] || 0) + 1;
+        return accumulator;
+      }, {});
+      const scoreWord = (word, cleaned) => {
+        if (word === cleaned) return 3;
+        if (word.length === cleaned.length - 1) return 2;
+        return 1;
+      };
+      const canBuild = (word, letters) => {
+        const pool = { ...letters };
+        for (const letter of word) {
+          if (!pool[letter]) return false;
+          pool[letter] -= 1;
+        }
+        return true;
+      };
+
+      const findWords = () => {
+        const cleaned = normalize(input.value);
+        const min = Number(minLength.value);
+        const resultLimit = Math.min(LIMIT_MAX, Math.max(10, Number(limit.value) || LIMIT_DEFAULT));
+
+        limit.value = String(resultLimit);
+
+        minLengthValue.textContent = String(min);
+        limitValue.textContent = String(resultLimit);
+
+        if (!cleaned) {
+          results.innerHTML = '<p class="helper">Enter a few letters to see matches.</p>';
+          count.textContent = '0 matches';
+          exact.textContent = '0 exact words';
+          return;
+        }
+
+        const letters = frequency(cleaned);
+        const matches = words
+          .filter((word) => word.length >= min && word.length <= cleaned.length)
+          .filter((word) => canBuild(word, letters))
+          .sort((a, b) => scoreWord(b, cleaned) - scoreWord(a, cleaned) || b.length - a.length || a.localeCompare(b))
+          .slice(0, resultLimit);
+
+        const exactMatches = matches.filter((word) => word.length === cleaned.length).length;
+
+        count.textContent = `${matches.length} matches`;
+        exact.textContent = `${exactMatches} exact words`;
+        results.innerHTML = matches.length
+          ? matches.map((word) => `
+                  <button type="button" class="password-item" data-word="${word}">
+                    <span class="password-text">${word}</span>
+                    <span class="password-copy">Copy</span>
+                  </button>`).join('')
+          : '<p class="helper">No words matched those letters. Try a different scramble.</p>';
+      };
+
+      search.addEventListener('click', findWords);
+      clear.addEventListener('click', () => {
+        input.value = '';
+        minLength.value = '3';
+        limit.value = String(LIMIT_DEFAULT);
+        minLengthValue.textContent = '3';
+        limitValue.textContent = String(LIMIT_DEFAULT);
+        results.innerHTML = '<p class="helper">Enter a few letters to see matches.</p>';
+        count.textContent = '0 matches';
+        exact.textContent = '0 exact words';
+        copyStatus.textContent = 'Click any result to copy it.';
+      });
+
+      results.addEventListener('click', async (event) => {
+        const target = event.target instanceof Element ? event.target.closest('[data-word]') : null;
+
+        if (!target) return;
+
+        const value = target.dataset.word || '';
+        await navigator.clipboard.writeText(value);
+        copyStatus.textContent = 'Word copied.';
+        setTimeout(() => {
+          copyStatus.textContent = 'Click any result to copy it.';
+        }, 1200);
+      });
+
+      minLength.addEventListener('input', findWords);
+      limit.addEventListener('input', findWords);
+      input.addEventListener('input', findWords);
+
+      findWords();
+    }
+  </script>
+</BaseLayout>

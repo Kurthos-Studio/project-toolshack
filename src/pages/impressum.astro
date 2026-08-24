@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../data/site';
+---
+
+<BaseLayout title={`Impressum | ${siteConfig.name}`} description="Impressum." showAds={false}>
+  <section class="hero compact">
+    <p class="eyebrow">Impressum</p>
+    <h1>Impressum</h1>
+  </section>
+
+  <section class="section content-card">
+    <p>
+      Kurt Thomas Steinert<br />
+      Fockestrasse 4<br />
+      04275 Leipzig<br />
+      Germany
+    </p>
+    <p>Contact email: admin@kurthos.com</p>
+  </section>
+</BaseLayout>

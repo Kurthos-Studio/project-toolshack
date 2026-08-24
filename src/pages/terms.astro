@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../data/site';
+---
+
+<BaseLayout
+  title={`Terms | ${siteConfig.name}`}
+  description="Terms of use for the Toolshack utility site."
+  showAds={false}
+>
+  <section class="hero">
+    <p class="eyebrow">Terms of use</p>
+    <h1>Simple usage terms for a simple site.</h1>
+    <p class="lead">
+      The tools are provided as-is. Treat generated values as starting points and verify anything
+      security-sensitive before use.
+    </p>
+  </section>
+
+  <section class="section content-card">
+    <h2>Core points</h2>
+    <p>
+      Do not rely on the password generator for compliance-specific requirements without reviewing
+      your own policy. Do not use the word tools as a substitute for professional editing software.
+    </p>
+    <p>
+      You can expand this page with jurisdiction-specific terms, copyright language, or support
+      expectations when the site is live.
+    </p>
+    <p>
+      Site owner: Kurt Thomas Steinert, Fockestrasse 4, 04275 Leipzig, Germany.
+      Contact email: admin@kurthos.com.
+    </p>
+  </section>
+</BaseLayout>

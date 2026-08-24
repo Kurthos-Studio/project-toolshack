@@ -1,0 +1,21 @@
+---
+import { mainNavigation, siteConfig } from '../data/site';
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label={siteConfig.name}>
+      <span class="brand-mark">T</span>
+      <span>
+        <strong>{siteConfig.name}</strong>
+        <small>{siteConfig.tagline}</small>
+      </span>
+    </a>
+
+    <nav aria-label="Primary navigation" class="nav-links">
+      {mainNavigation.map((item) => (
+        <a href={item.href}>{item.label}</a>
+      ))}
+    </nav>
+  </div>
+</header>

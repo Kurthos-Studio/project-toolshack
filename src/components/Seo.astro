@@ -1,0 +1,43 @@
+---
+import { siteConfig } from '../data/site';
+
+type Props = {
+  title: string;
+  description: string;
+  canonical?: string;
+  image?: string;
+  noIndex?: boolean;
+  schema?: Record<string, unknown> | Array<Record<string, unknown>>;
+};
+
+const {
+  title,
+  description,
+  canonical = Astro.url.pathname,
+  image = siteConfig.ogImage,
+  noIndex = false,
+  schema,
+} = Astro.props as Props;
+
+const site = Astro.site?.toString() ?? siteConfig.url;
+const canonicalUrl = new URL(canonical, site).toString();
+const imageUrl = new URL(image, site).toString();
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={siteConfig.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={imageUrl} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="theme-color" content="#113149" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+{noIndex ? <meta name="robots" content="noindex, nofollow" /> : null}
+{schema ? <script type="application/ld+json" set:html={JSON.stringify(schema)} /> : null}

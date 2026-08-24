@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { siteConfig, tools } from '../../data/site';
+---
+
+<BaseLayout title={`Tools | ${siteConfig.name}`} description="Browse the current tools.">
+  <section class="hero compact">
+    <p class="eyebrow">Tools</p>
+    <h1>Choose a tool.</h1>
+    <p class="lead">The current set is small and focused.</p>
+  </section>
+
+  <section class="section tool-grid">
+    {tools.map((tool) => <ToolCard {...tool} />)}
+  </section>
+</BaseLayout>

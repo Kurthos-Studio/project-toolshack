@@ -1,0 +1,32 @@
+---
+type Props = {
+  label?: string;
+  slot?: string;
+};
+
+const client = process.env.PUBLIC_ADSENSE_CLIENT;
+const { label = 'Ad', slot = '0000000000' } = Astro.props as Props;
+---
+
+<aside class="ad-slot" aria-label={label}>
+  <p class="eyebrow">{label}</p>
+  {client ? (
+    <>
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client={client}
+        data-ad-slot={slot}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+      <script is:inline src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`} crossorigin="anonymous"></script>
+      <script is:inline>
+        window.adsbygoogle = window.adsbygoogle || [];
+        window.adsbygoogle.push({});
+      </script>
+    </>
+  ) : (
+    <p>Ad placement.</p>
+  )}
+</aside>

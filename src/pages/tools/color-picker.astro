@@ -1,0 +1,169 @@
+---
+import AdSlot from '../../components/AdSlot.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteConfig } from '../../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Color Picker',
+  applicationCategory: 'DesignApplication',
+  operatingSystem: 'Web',
+  description: 'Pick colors and copy hex, RGB, and HSL values.',
+};
+---
+
+<BaseLayout title={`Color Picker | ${siteConfig.name}`} description="Pick a color and instantly copy its hex, RGB, and HSL values." schema={schema}>
+  <section class="tool-page">
+    <div class="hero compact">
+      <p class="eyebrow">Design</p>
+      <h1>Color Picker</h1>
+    </div>
+
+    <section class="content-card tool-explainer">
+      <p class="eyebrow">How to use</p>
+      <h2>Pick, refine, and copy your color formats</h2>
+      <p>Choose a base color with the picker or paste a hex value manually. The tool keeps both inputs in sync and normalizes invalid values back to a safe default.</p>
+      <p>Use the copy buttons to grab HEX, RGB, or HSL instantly. The live preview helps you judge contrast and mood before you move the color into your project.</p>
+    </section>
+
+    <AdSlot label="Ad" />
+
+    <div class="tool-shell">
+      <section class="tool-panel stack" data-color-tool>
+        <div class="field-grid">
+          <label>
+            Pick a color
+            <input type="color" value="#0f7a74" data-color-input />
+          </label>
+          <label>
+            Hex code
+            <input type="text" value="#0f7a74" data-hex-input />
+          </label>
+        </div>
+
+        <div class="copy-row">
+          <button type="button" class="primary" data-copy-hex>Copy hex</button>
+          <button type="button" class="secondary" data-copy-rgb>Copy RGB</button>
+          <button type="button" class="secondary" data-copy-hsl>Copy HSL</button>
+        </div>
+
+        <div class="result-panel">
+          <p class="eyebrow">Color readout</p>
+          <div class="result-box code-box" data-readout>#0f7a74</div>
+          <div class="result-meta">
+            <span class="chip" data-rgb>rgb(15, 122, 116)</span>
+            <span class="chip" data-hsl>hsl(176, 79%, 27%)</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="preview-card" data-preview>
+        <p class="eyebrow" style="background: rgba(255,255,255,0.12); color: #d7fffa;">Live preview</p>
+        <div>
+          <div class="preview-value">#0f7a74</div>
+          <p>Use this color in buttons, accents, or a style guide.</p>
+        </div>
+        <div class="palette-grid">
+          <div class="palette-item" style="background:#102331;color:white;"><strong>Ink</strong><span>#102331</span></div>
+          <div class="palette-item" style="background:#e86d3c;color:white;"><strong>Sun</strong><span>#e86d3c</span></div>
+          <div class="palette-item" style="background:#f6f1e8;"><strong>Paper</strong><span>#f6f1e8</span></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <script is:inline>
+    const root = document.querySelector('[data-color-tool]');
+
+    if (root) {
+      const colorInput = root.querySelector('[data-color-input]');
+      const hexInput = root.querySelector('[data-hex-input]');
+      const readout = root.querySelector('[data-readout]');
+      const rgbChip = root.querySelector('[data-rgb]');
+      const hslChip = root.querySelector('[data-hsl]');
+      const preview = document.querySelector('[data-preview]');
+      const previewValue = preview.querySelector('.preview-value');
+      const copyHex = root.querySelector('[data-copy-hex]');
+      const copyRgb = root.querySelector('[data-copy-rgb]');
+      const copyHsl = root.querySelector('[data-copy-hsl]');
+
+      function normalizeHex(value) {
+        const stripped = value.replace('#', '').trim();
+        if (stripped.length === 3) {
+          return `#${stripped.split('').map((part) => part + part).join('')}`;
+        }
+        if (/^[0-9a-f]{6}$/i.test(stripped)) return `#${stripped.toLowerCase()}`;
+        return '#0f7a74';
+      }
+
+      function hexToRgb(hex) {
+        const value = normalizeHex(hex).slice(1);
+        return {
+          red: Number.parseInt(value.slice(0, 2), 16),
+          green: Number.parseInt(value.slice(2, 4), 16),
+          blue: Number.parseInt(value.slice(4, 6), 16),
+        };
+      }
+
+      function rgbToHsl(red, green, blue) {
+        const r = red / 255;
+        const g = green / 255;
+        const b = blue / 255;
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        let hue = 0;
+        let saturation = 0;
+        const lightness = (max + min) / 2;
+
+        if (max !== min) {
+          const delta = max - min;
+          saturation = lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+          switch (max) {
+            case r: hue = (g - b) / delta + (g < b ? 6 : 0); break;
+            case g: hue = (b - r) / delta + 2; break;
+            default: hue = (r - g) / delta + 4;
+          }
+          hue /= 6;
+        }
+
+        return {
+          hue: Math.round(hue * 360),
+          saturation: Math.round(saturation * 100),
+          lightness: Math.round(lightness * 100),
+        };
+      }
+
+      function copyValue(value) {
+        navigator.clipboard.writeText(value);
+      }
+
+      function update(value) {
+        const hex = normalizeHex(value);
+        const rgb = hexToRgb(hex);
+        const hsl = rgbToHsl(rgb.red, rgb.green, rgb.blue);
+        const rgbText = `rgb(${rgb.red}, ${rgb.green}, ${rgb.blue})`;
+        const hslText = `hsl(${hsl.hue}, ${hsl.saturation}%, ${hsl.lightness}%)`;
+
+        colorInput.value = hex;
+        hexInput.value = hex;
+        readout.textContent = hex;
+        rgbChip.textContent = rgbText;
+        hslChip.textContent = hslText;
+        previewValue.textContent = hex;
+        preview.style.background = `linear-gradient(160deg, ${hex}, ${hex}dd 55%, #2863d1)`;
+        copyHex.dataset.value = hex;
+        copyRgb.dataset.value = rgbText;
+        copyHsl.dataset.value = hslText;
+      }
+
+      colorInput.addEventListener('input', (event) => update(event.target.value));
+      hexInput.addEventListener('change', (event) => update(event.target.value));
+      copyHex.addEventListener('click', () => copyValue(copyHex.dataset.value));
+      copyRgb.addEventListener('click', () => copyValue(copyRgb.dataset.value));
+      copyHsl.addEventListener('click', () => copyValue(copyHsl.dataset.value));
+
+      update(colorInput.value);
+    }
+  </script>
+</BaseLayout>

@@ -1,0 +1,57 @@
+---
+import AdSlot from '../components/AdSlot.astro';
+import ToolCard from '../components/ToolCard.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig, tools } from '../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: siteConfig.name,
+  url: siteConfig.url,
+  description: siteConfig.description,
+};
+---
+
+<BaseLayout title={`${siteConfig.name} | Tools`} description={siteConfig.description} schema={schema}>
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Quick tools</p>
+        <h1>Useful tools that stay out of your way.</h1>
+        <p class="lead">Pick a tool, use it, move on.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="/tools/">Browse tools</a>
+        </div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="stat-grid">
+          <div class="stat-card"><strong>3</strong><span>tools live now</span></div>
+          <div class="stat-card"><strong>Fast</strong><span>browser-side logic</span></div>
+          <div class="stat-card"><strong>Clean</strong><span>simple pages</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Featured tools</h2>
+    <div class="tool-grid">
+      {tools.map((tool) => <ToolCard {...tool} />)}
+    </div>
+  </section>
+
+  <section class="section tool-shell">
+    <div class="content-card">
+      <p class="eyebrow">Now</p>
+      <h2>Fast, private, dependable.</h2>
+      <div class="feature-grid">
+        <div class="content-card"><h3>Fast</h3><p>Get what you need without waiting around.</p></div>
+        <div class="content-card"><h3>Private</h3><p>Your input stays in your browser while you work.</p></div>
+        <div class="content-card"><h3>Dependable</h3><p>Clean tools that do one job and do it well.</p></div>
+      </div>
+    </div>
+    <AdSlot label="Ad" />
+  </section>
+</BaseLayout>
