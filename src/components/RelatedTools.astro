@@ -1,0 +1,34 @@
+---
+import { tools } from '../data/site';
+
+type Props = {
+  currentSlug: string;
+  title?: string;
+  limit?: number;
+};
+
+const { currentSlug, title = 'Related tools', limit = 3 } = Astro.props as Props;
+
+const currentTool = tools.find((tool) => tool.slug === currentSlug);
+const otherTools = tools.filter((tool) => tool.slug !== currentSlug);
+const ordered = [
+  ...otherTools.filter((tool) => currentTool && tool.category === currentTool.category),
+  ...otherTools.filter((tool) => !currentTool || tool.category !== currentTool.category),
+];
+const related = ordered.slice(0, limit);
+---
+
+{related.length > 0 && (
+  <section class="section content-card related-tools">
+    <p class="eyebrow">Explore more</p>
+    <h2>{title}</h2>
+    <div class="related-grid">
+      {related.map((tool) => (
+        <a class="related-link" href={tool.href}>
+          <strong>{tool.title}</strong>
+          <span>{tool.description}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+)}

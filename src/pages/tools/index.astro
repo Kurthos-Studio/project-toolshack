@@ -2,16 +2,111 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ToolCard from '../../components/ToolCard.astro';
 import { siteConfig, tools } from '../../data/site';
+
+const categories = [...new Set(tools.map((tool) => tool.category))];
+const groupedTools = categories.map((category) => ({
+  category,
+  entries: tools.filter((tool) => tool.category === category),
+}));
 ---
 
 <BaseLayout title={`Tools | ${siteConfig.name}`} description="Browse the current tools.">
   <section class="hero compact">
     <p class="eyebrow">Tools</p>
     <h1>Choose a tool.</h1>
-    <p class="lead">The current set is small and focused.</p>
+    <p class="lead">Search, filter, and jump straight to what you need.</p>
   </section>
 
-  <section class="section tool-grid">
-    {tools.map((tool) => <ToolCard {...tool} />)}
+  <section class="section content-card tools-discovery" data-tools-search>
+    <h2>Find a tool quickly</h2>
+    <div class="field-grid">
+      <label>
+        Search tools
+        <input type="search" placeholder="Type a tool name" data-tool-search />
+      </label>
+      <label>
+        Category
+        <select data-tool-category>
+          <option value="all">All categories</option>
+          {categories.map((category) => <option value={category}>{category}</option>)}
+        </select>
+      </label>
+    </div>
+    <div class="category-pills">
+      <button type="button" class="inline-link" data-category-pill data-value="all">All</button>
+      {categories.map((category) => (
+        <button type="button" class="inline-link" data-category-pill data-value={category}>{category}</button>
+      ))}
+    </div>
   </section>
+
+  {groupedTools.map(({ category, entries }) => (
+    <section class="section tool-category" data-tool-section data-category={category}>
+      <h2>{category}</h2>
+      <div class="tool-grid">
+        {entries.map((tool) => (
+          <div data-tool-card data-title={tool.title.toLowerCase()} data-description={tool.description.toLowerCase()} data-category={tool.category}>
+            <ToolCard {...tool} />
+          </div>
+        ))}
+      </div>
+    </section>
+  ))}
+
+  <script is:inline>
+    const root = document.querySelector('[data-tools-search]');
+
+    if (root) {
+      const searchInput = root.querySelector('[data-tool-search]');
+      const categorySelect = root.querySelector('[data-tool-category]');
+      const pills = root.querySelectorAll('[data-category-pill]');
+      const cards = [...document.querySelectorAll('[data-tool-card]')];
+      const sections = [...document.querySelectorAll('[data-tool-section]')];
+
+      function setActivePill(value) {
+        pills.forEach((pill) => {
+          const active = pill.dataset.value === value;
+          pill.classList.toggle('active', active);
+        });
+      }
+
+      function applyFilters() {
+        const query = (searchInput.value || '').trim().toLowerCase();
+        const selectedCategory = categorySelect.value || 'all';
+
+        cards.forEach((card) => {
+          const title = card.dataset.title || '';
+          const description = card.dataset.description || '';
+          const category = card.dataset.category || '';
+          const matchesSearch = !query || title.includes(query) || description.includes(query);
+          const matchesCategory = selectedCategory === 'all' || category === selectedCategory;
+
+          card.hidden = !(matchesSearch && matchesCategory);
+        });
+
+        sections.forEach((section) => {
+          const visibleCards = section.querySelectorAll('[data-tool-card]:not([hidden])');
+          section.hidden = visibleCards.length === 0;
+        });
+      }
+
+      searchInput.addEventListener('input', applyFilters);
+      categorySelect.addEventListener('change', () => {
+        setActivePill(categorySelect.value);
+        applyFilters();
+      });
+
+      pills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+          const value = pill.dataset.value || 'all';
+          categorySelect.value = value;
+          setActivePill(value);
+          applyFilters();
+        });
+      });
+
+      setActivePill('all');
+      applyFilters();
+    }
+  </script>
 </BaseLayout>

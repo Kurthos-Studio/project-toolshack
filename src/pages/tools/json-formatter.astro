@@ -1,0 +1,156 @@
+---
+import AdSlot from '../../components/AdSlot.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import { siteConfig } from '../../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'JSON Formatter',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Web',
+  description: 'Format, minify, and validate JSON.',
+};
+---
+
+<BaseLayout title={`JSON Formatter | ${siteConfig.name}`} description="Format and validate JSON quickly." schema={schema}>
+  <section class="tool-page">
+    <div class="hero compact">
+      <p class="eyebrow">Developer</p>
+      <h1>JSON Formatter</h1>
+    </div>
+
+    <section class="content-card tool-explainer">
+      <p class="eyebrow">How to use</p>
+      <h2>Validate and format JSON in one place</h2>
+      <p>Paste JSON, pick indentation, and format or minify depending on your target use.</p>
+      <p>Error messages help you find invalid JSON quickly before copy or export.</p>
+    </section>
+
+    <AdSlot label="Ad" />
+
+    <div class="tool-shell word-shell">
+      <section class="tool-panel stack" data-json-tool>
+        <label>
+          JSON input
+          <textarea data-input>{`{"name":"Toolshack","tools":["password","json"]}`}</textarea>
+        </label>
+
+        <div class="field-grid">
+          <label>
+            Indent size
+            <input type="range" min="2" max="8" step="2" value="2" data-indent />
+            <span class="field-hint"><strong data-indent-value>2</strong> spaces</span>
+          </label>
+          <label>
+            Status
+            <input type="text" data-status value="Ready" readonly />
+          </label>
+        </div>
+
+        <div class="tool-actions">
+          <button type="button" class="primary" data-format>Format JSON</button>
+          <button type="button" class="secondary" data-minify>Minify JSON</button>
+          <button type="button" class="secondary" data-copy>Copy</button>
+        </div>
+
+        <div class="result-panel">
+          <p class="eyebrow">Output</p>
+          <textarea data-output readonly></textarea>
+          <p class="field-hint" data-message>Paste JSON and click Format JSON.</p>
+        </div>
+      </section>
+    </div>
+
+    <RelatedTools slot="afterAds" currentSlug="json-formatter" />
+  </section>
+
+  <script is:inline>
+    const root = document.querySelector('[data-json-tool]');
+
+    if (root) {
+      const input = root.querySelector('[data-input]');
+      const output = root.querySelector('[data-output]');
+      const indent = root.querySelector('[data-indent]');
+      const indentValue = root.querySelector('[data-indent-value]');
+      const status = root.querySelector('[data-status]');
+      const message = root.querySelector('[data-message]');
+      const formatButton = root.querySelector('[data-format]');
+      const minifyButton = root.querySelector('[data-minify]');
+      const copyButton = root.querySelector('[data-copy]');
+
+      function parseJson() {
+        const raw = input.value || '';
+        return JSON.parse(raw);
+      }
+
+      function updateActionButtons(isValid) {
+        formatButton.disabled = !isValid;
+        minifyButton.disabled = !isValid;
+        copyButton.disabled = !isValid || !(output.value || '').trim();
+      }
+
+      function validateInput(showValidMessage = false) {
+        try {
+          parseJson();
+          if (showValidMessage) {
+            setState(true, 'JSON is valid. Choose Format JSON or Minify JSON.');
+          } else {
+            status.value = 'Valid JSON';
+          }
+          updateActionButtons(true);
+          return true;
+        } catch (error) {
+          output.value = '';
+          setState(false, error instanceof Error ? error.message : 'Invalid JSON input.');
+          updateActionButtons(false);
+          return false;
+        }
+      }
+
+      function setState(ok, text) {
+        status.value = ok ? 'Valid JSON' : 'Invalid JSON';
+        message.textContent = text;
+      }
+
+      function formatJson() {
+        if (!validateInput()) return;
+
+        const parsed = parseJson();
+        const spacing = Number(indent.value) || 2;
+        output.value = JSON.stringify(parsed, null, spacing);
+        setState(true, 'Formatted successfully.');
+        updateActionButtons(true);
+      }
+
+      function minifyJson() {
+        if (!validateInput()) return;
+
+        const parsed = parseJson();
+        output.value = JSON.stringify(parsed);
+        setState(true, 'Minified successfully.');
+        updateActionButtons(true);
+      }
+
+      indent.addEventListener('input', () => {
+        indentValue.textContent = indent.value;
+      });
+
+      input.addEventListener('input', () => {
+        validateInput(true);
+      });
+
+      formatButton.addEventListener('click', formatJson);
+      minifyButton.addEventListener('click', minifyJson);
+
+      copyButton.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(output.value || '');
+        message.textContent = 'Output copied.';
+      });
+
+      validateInput(true);
+      formatJson();
+    }
+  </script>
+</BaseLayout>

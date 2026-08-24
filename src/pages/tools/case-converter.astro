@@ -1,0 +1,193 @@
+---
+import AdSlot from '../../components/AdSlot.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import { siteConfig } from '../../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Case Converter',
+  applicationCategory: 'ProductivityApplication',
+  operatingSystem: 'Web',
+  description: 'Convert text between upper, lower, title, and sentence case.',
+};
+---
+
+<BaseLayout title={`Case Converter | ${siteConfig.name}`} description="Convert text case quickly." schema={schema}>
+  <section class="tool-page">
+    <div class="hero compact">
+      <p class="eyebrow">Text</p>
+      <h1>Case Converter</h1>
+    </div>
+
+    <section class="content-card tool-explainer">
+      <p class="eyebrow">How to use</p>
+      <h2>Transform text into the case style you need</h2>
+      <p>Paste text, choose a case style, and copy the converted output instantly.</p>
+      <p>Useful for headlines, email copy, social content, and quick cleanup tasks.</p>
+    </section>
+
+    <AdSlot label="Ad" />
+
+    <div class="tool-shell word-shell">
+      <section class="tool-panel stack" data-case-tool>
+        <label>
+          Input text
+          <textarea data-input placeholder="Paste your text here">Hello world from toolshack</textarea>
+        </label>
+
+        <div class="field-grid">
+          <label>
+            Case style
+            <select data-mode>
+              <option value="upper">UPPERCASE</option>
+              <option value="lower">lowercase</option>
+              <option value="title">Title Case</option>
+              <option value="sentence">Sentence case</option>
+              <option value="alternating">aLtErNaTiNg</option>
+              <option value="camel">camelCase</option>
+              <option value="pascal">PascalCase</option>
+              <option value="snake">snake_case</option>
+              <option value="kebab">kebab-case</option>
+              <option value="screaming-snake">SCREAMING_SNAKE_CASE</option>
+            </select>
+          </label>
+          <label>
+            Converted characters
+            <input type="text" data-count value="0" readonly />
+          </label>
+        </div>
+
+        <div class="tool-actions">
+          <button type="button" class="primary" data-copy>Copy converted text</button>
+          <button type="button" class="secondary" data-clear>Clear</button>
+        </div>
+
+        <div class="result-panel">
+          <p class="eyebrow">Output</p>
+          <div class="result-box" data-output></div>
+          <p class="field-hint" data-copy-status>Converted text updates while you type.</p>
+        </div>
+      </section>
+    </div>
+
+    <RelatedTools slot="afterAds" currentSlug="case-converter" />
+  </section>
+
+  <script is:inline>
+    const root = document.querySelector('[data-case-tool]');
+
+    if (root) {
+      const input = root.querySelector('[data-input]');
+      const mode = root.querySelector('[data-mode]');
+      const output = root.querySelector('[data-output]');
+      const count = root.querySelector('[data-count]');
+      const copyButton = root.querySelector('[data-copy]');
+      const clearButton = root.querySelector('[data-clear]');
+      const copyStatus = root.querySelector('[data-copy-status]');
+
+      function toTitleCase(value) {
+        return value
+          .toLowerCase()
+          .replace(/\b\w/g, (letter) => letter.toUpperCase());
+      }
+
+      function toSentenceCase(value) {
+        const lower = value.toLowerCase();
+        return lower.replace(/(^\s*[a-z])|([.!?]\s+[a-z])/g, (chunk) => chunk.toUpperCase());
+      }
+
+      function toAlternating(value) {
+        let useUpper = true;
+        let result = '';
+
+        for (const char of value.toLowerCase()) {
+          if (/[a-z]/.test(char)) {
+            result += useUpper ? char.toUpperCase() : char;
+            useUpper = !useUpper;
+          } else {
+            result += char;
+          }
+        }
+
+        return result;
+      }
+
+      function toWords(value) {
+        return (value || '')
+          .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+          .toLowerCase()
+          .split(/[^a-z0-9]+/)
+          .filter(Boolean);
+      }
+
+      function capitalize(word) {
+        return word ? word[0].toUpperCase() + word.slice(1) : '';
+      }
+
+      function toCamelCase(value) {
+        const words = toWords(value);
+        if (words.length === 0) return '';
+        return words[0] + words.slice(1).map(capitalize).join('');
+      }
+
+      function toPascalCase(value) {
+        return toWords(value).map(capitalize).join('');
+      }
+
+      function toSnakeCase(value) {
+        return toWords(value).join('_');
+      }
+
+      function toKebabCase(value) {
+        return toWords(value).join('-');
+      }
+
+      function toScreamingSnakeCase(value) {
+        return toWords(value).join('_').toUpperCase();
+      }
+
+      function convertValue(value, selectedMode) {
+        switch (selectedMode) {
+          case 'upper': return value.toUpperCase();
+          case 'lower': return value.toLowerCase();
+          case 'title': return toTitleCase(value);
+          case 'sentence': return toSentenceCase(value);
+          case 'alternating': return toAlternating(value);
+          case 'camel': return toCamelCase(value);
+          case 'pascal': return toPascalCase(value);
+          case 'snake': return toSnakeCase(value);
+          case 'kebab': return toKebabCase(value);
+          case 'screaming-snake': return toScreamingSnakeCase(value);
+          default: return value;
+        }
+      }
+
+      function render() {
+        const converted = convertValue(input.value || '', mode.value || 'upper');
+        output.textContent = converted;
+        count.value = String(converted.length);
+      }
+
+      input.addEventListener('input', render);
+      mode.addEventListener('change', render);
+
+      clearButton.addEventListener('click', () => {
+        input.value = '';
+        render();
+        copyStatus.textContent = 'Input cleared.';
+      });
+
+      copyButton.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(output.textContent || '');
+        copyStatus.textContent = 'Converted text copied.';
+        setTimeout(() => {
+          copyStatus.textContent = 'Converted text updates while you type.';
+        }, 1200);
+      });
+
+      render();
+    }
+  </script>
+</BaseLayout>

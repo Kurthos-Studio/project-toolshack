@@ -1,6 +1,7 @@
 ---
 import AdSlot from '../../components/AdSlot.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
 import { siteConfig } from '../../data/site';
 
 const schema = {
@@ -71,6 +72,8 @@ const schema = {
         </div>
       </aside>
     </div>
+
+    <RelatedTools slot="afterAds" currentSlug="color-picker" />
   </section>
 
   <script is:inline>

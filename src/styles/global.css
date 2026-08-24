@@ -306,6 +306,18 @@ button:hover,
   transform: translateY(-1px);
 }
 
+.button:disabled,
+button:disabled,
+.copy-button:disabled,
+.tool-card-link:disabled,
+.inline-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+  filter: grayscale(0.2);
+}
+
 .card-grid,
 .tool-grid,
 .feature-grid,
@@ -398,6 +410,49 @@ button:hover,
 .tool-card-link {
   margin-top: 0.5rem;
   width: fit-content;
+}
+
+.tools-discovery {
+  display: grid;
+  gap: 1rem;
+}
+
+.tools-discovery h2,
+.tool-category h2,
+.related-tools h2 {
+  margin: 0;
+}
+
+.category-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.category-pills .inline-link.active {
+  background: linear-gradient(135deg, var(--accent), #ff8e5d);
+  color: white;
+}
+
+.related-grid {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.related-link {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.95rem 1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(16, 35, 49, 0.12);
+  background: rgba(255, 255, 255, 0.94);
+  text-decoration: none;
+}
+
+.related-link span {
+  color: var(--muted);
+  font-size: 0.92rem;
 }
 
 .tool-page {
@@ -666,6 +721,20 @@ textarea {
   background: linear-gradient(160deg, #102331, #0f7a74 55%, #2863d1);
 }
 
+.qr-preview {
+  display: grid;
+  gap: 0.8rem;
+  align-content: start;
+}
+
+.qr-preview img {
+  width: min(100%, 320px);
+  border-radius: 16px;
+  border: 1px solid rgba(16, 35, 49, 0.12);
+  background: white;
+  padding: 0.8rem;
+}
+
 .preview-card .preview-value {
   font-size: clamp(2rem, 6vw, 4rem);
   line-height: 1;
@@ -752,6 +821,7 @@ textarea {
   .field-grid,
   .password-options,
   .password-list,
+  .related-grid,
   .swatch-grid,
   .palette-grid {
     grid-template-columns: 1fr;

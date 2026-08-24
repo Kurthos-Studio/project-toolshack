@@ -1,6 +1,7 @@
 ---
 import AdSlot from '../../components/AdSlot.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
 import { wordList } from '../../data/word-list';
 import { siteConfig } from '../../data/site';
 
@@ -66,6 +67,8 @@ const schema = {
         </div>
       </section>
     </div>
+
+    <RelatedTools slot="afterAds" currentSlug="word-unscrambler" />
   </section>
 
   <script is:inline define:vars={{ words: wordList }}>
