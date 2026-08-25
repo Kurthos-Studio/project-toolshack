@@ -24,7 +24,7 @@ const client = process.env.PUBLIC_ADSENSE_CLIENT;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="google-adsense-account" content="${client}">
+    <meta name="google-adsense-account" content={client}>
     <Seo {...(Astro.props as Props)} />
   </head>
   <body>
