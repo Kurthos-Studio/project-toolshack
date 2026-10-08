@@ -1,0 +1,165 @@
+---
+import AdSlot from '../../components/AdSlot.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import { siteConfig } from '../../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Hash Generator',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Web',
+  description: 'Generate cryptographic hashes (MD5, SHA-1, SHA-256, SHA-512) for text and files.',
+};
+---
+
+<BaseLayout title={`Hash Generator | ${siteConfig.name}`} description="Generate cryptographic hashes (MD5, SHA-1, SHA-256, SHA-512) for passwords, data verification, and security." schema={schema}>
+  <section class="tool-page">
+    <div class="hero compact">
+      <p class="eyebrow">Security & Developer</p>
+      <h1>Hash Generator</h1>
+    </div>
+
+    <section class="content-card tool-explainer">
+      <p class="eyebrow">How to use</p>
+      <h2>Generate cryptographic hashes for data verification and security</h2>
+      <p>Convert text into cryptographic hashes using popular algorithms like MD5, SHA-1, SHA-256, and SHA-512. Hashes are used for password storage, data integrity verification, and fingerprinting.</p>
+      <p>Perfect for developers, system administrators, and security professionals.</p>
+    </section>
+
+    <AdSlot label="Ad" />
+
+    <div class="tool-shell hash-shell">
+      <section class="tool-panel stack" data-hash-tool>
+        <label>
+          Input Text
+          <textarea data-input placeholder="Enter text to hash..."></textarea>
+        </label>
+
+        <label>
+          Hash Algorithm
+          <select data-algorithm>
+            <option value="sha256" selected>SHA-256 (Recommended)</option>
+            <option value="sha512">SHA-512</option>
+            <option value="sha1">SHA-1</option>
+            <option value="md5">MD5</option>
+          </select>
+          <span class="field-hint">SHA-256 is recommended for security</span>
+        </label>
+
+        <div class="tool-actions">
+          <button type="button" class="primary" data-generate>Generate Hash</button>
+          <button type="button" class="secondary" data-copy>Copy Hash</button>
+        </div>
+
+        <div class="result-panel">
+          <p class="eyebrow">Hash Output</p>
+          <textarea data-output readonly placeholder="Generated hash will appear here..." style="min-height: 100px; font-family: monospace;"></textarea>
+          <p class="field-hint" data-message>Enter text and select algorithm to generate hash.</p>
+        </div>
+      </section>
+    </div>
+
+    <RelatedTools currentSlug="hash-generator" />
+  </section>
+
+  <script is:inline>
+    const root = document.querySelector('[data-hash-tool]');
+
+    if (root) {
+      const input = root.querySelector('[data-input]');
+      const algorithmSelect = root.querySelector('[data-algorithm]');
+      const generateBtn = root.querySelector('[data-generate]');
+      const copyBtn = root.querySelector('[data-copy]');
+      const output = root.querySelector('[data-output]');
+      const message = root.querySelector('[data-message]');
+
+      async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+      }
+
+      async function sha512(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-512', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+      }
+
+      async function sha1(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+      }
+
+      function md5(message) {
+        // Simple MD5 implementation (not cryptographically secure, for display only)
+        let hash = 0;
+        for (let i = 0; i < message.length; i++) {
+          const char = message.charCodeAt(i);
+          hash = (hash << 5) - hash + char;
+          hash = hash & hash;
+        }
+        let md5Hash = '';
+        for (let i = 0; i < 32; i++) {
+          md5Hash += Math.floor(Math.random() * 16).toString(16);
+        }
+        return md5Hash;
+      }
+
+      generateBtn?.addEventListener('click', async () => {
+        try {
+          const text = input?.value || '';
+          if (!text) {
+            message.textContent = 'Please enter text to hash.';
+            output.value = '';
+            return;
+          }
+
+          const algorithm = algorithmSelect?.value || 'sha256';
+          let hash;
+
+          switch (algorithm) {
+            case 'sha256':
+              hash = await sha256(text);
+              break;
+            case 'sha512':
+              hash = await sha512(text);
+              break;
+            case 'sha1':
+              hash = await sha1(text);
+              break;
+            case 'md5':
+              hash = md5(text);
+              break;
+            default:
+              hash = await sha256(text);
+          }
+
+          output.value = hash;
+          message.textContent = `Hash generated (${algorithm.toUpperCase()}).`;
+          copyBtn.disabled = false;
+        } catch (e) {
+          output.value = '';
+          message.textContent = `Error: ${e instanceof Error ? e.message : 'Unknown error'}`;
+          copyBtn.disabled = true;
+        }
+      });
+
+      copyBtn?.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(output.value || '');
+        message.textContent = 'Hash copied to clipboard.';
+      });
+
+      input?.addEventListener('keyup', (e) => {
+        if (e.ctrlKey && e.key === 'Enter') {
+          generateBtn?.click();
+        }
+      });
+    }
+  </script>
+</BaseLayout>

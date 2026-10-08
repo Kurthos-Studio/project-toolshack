@@ -1,0 +1,162 @@
+---
+import AdSlot from '../../components/AdSlot.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import { siteConfig } from '../../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'UUID/GUID Generator',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Web',
+  description: 'Generate universally unique identifiers (UUIDs) in multiple formats and versions.',
+};
+---
+
+<BaseLayout title={`UUID/GUID Generator | ${siteConfig.name}`} description="Generate UUIDs and GUIDs in multiple versions and formats for your applications." schema={schema}>
+  <section class="tool-page">
+    <div class="hero compact">
+      <p class="eyebrow">Developer</p>
+      <h1>UUID/GUID Generator</h1>
+    </div>
+
+    <section class="content-card tool-explainer">
+      <p class="eyebrow">How to use</p>
+      <h2>Generate unique identifiers instantly</h2>
+      <p>Create universally unique identifiers (UUIDs) for databases, APIs, applications, and systems. Choose different UUID versions for different use cases.</p>
+      <p>Perfect for developers building scalable systems, microservices, and distributed applications.</p>
+    </section>
+
+    <AdSlot label="Ad" />
+
+    <div class="tool-shell uuid-shell">
+      <section class="tool-panel stack" data-uuid-tool>
+        <label>
+          UUID Version
+          <select data-version>
+            <option value="4" selected>Version 4 (Random)</option>
+            <option value="1">Version 1 (Timestamp + MAC)</option>
+            <option value="7">Version 7 (Unix Timestamp)</option>
+          </select>
+          <span class="field-hint">Different versions for different purposes</span>
+        </label>
+
+        <label>
+          Format
+          <select data-format>
+            <option value="standard" selected>Standard (8-4-4-4-12)</option>
+            <option value="no-dash">No Dashes</option>
+            <option value="braces">With Braces</option>
+            <option value="uppercase">Uppercase</option>
+          </select>
+        </label>
+
+        <label>
+          Quantity
+          <input type="number" data-quantity value="1" min="1" max="100" />
+          <span class="field-hint">Generate multiple UUIDs (max 100)</span>
+        </label>
+
+        <div class="tool-actions">
+          <button type="button" class="primary" data-generate>Generate</button>
+          <button type="button" class="secondary" data-copy>Copy All</button>
+        </div>
+
+        <div class="result-panel">
+          <p class="eyebrow">Output</p>
+          <textarea data-output readonly placeholder="Generated UUIDs will appear here..." style="min-height: 150px;"></textarea>
+          <p class="field-hint" data-message>Click Generate to create new UUIDs.</p>
+        </div>
+      </section>
+    </div>
+
+    <RelatedTools currentSlug="uuid-generator" />
+  </section>
+
+  <script is:inline>
+    const root = document.querySelector('[data-uuid-tool]');
+
+    if (root) {
+      const versionSelect = root.querySelector('[data-version]');
+      const formatSelect = root.querySelector('[data-format]');
+      const quantityInput = root.querySelector('[data-quantity]');
+      const generateBtn = root.querySelector('[data-generate]');
+      const copyBtn = root.querySelector('[data-copy]');
+      const output = root.querySelector('[data-output]');
+      const message = root.querySelector('[data-message]');
+
+      function generateUUIDv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+          const r = (Math.random() * 16) | 0;
+          const v = c === 'x' ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        });
+      }
+
+      function generateUUIDv1() {
+        const now = Date.now();
+        const random = Math.random().toString(16).substr(2, 12);
+        const timeLow = now.toString(16).padStart(8, '0');
+        const timeMid = Math.random().toString(16).padStart(4, '0').substr(0, 4);
+        const timeHigh = ((0x1000 | (Math.random() * 0x0fff)) | 0).toString(16);
+        const clockSeq = ((0x8000 | (Math.random() * 0x3fff)) | 0).toString(16);
+        return `${timeLow}-${timeMid}-${timeHigh}-${clockSeq}-${random}`;
+      }
+
+      function generateUUIDv7() {
+        const now = Date.now();
+        const timestamp = now.toString(16).padStart(12, '0');
+        const random = Array.from({ length: 20 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        return `${timestamp.substr(0, 8)}-${timestamp.substr(8, 4)}-7${random.substr(0, 3)}-8${random.substr(3, 3)}-${random.substr(6, 12)}`;
+      }
+
+      function formatUUID(uuid, format) {
+        switch (format) {
+          case 'no-dash':
+            return uuid.replace(/-/g, '');
+          case 'braces':
+            return `{${uuid}}`;
+          case 'uppercase':
+            return uuid.toUpperCase();
+          default:
+            return uuid;
+        }
+      }
+
+      generateBtn?.addEventListener('click', () => {
+        try {
+          const version = versionSelect?.value || '4';
+          const format = formatSelect?.value || 'standard';
+          const quantity = Math.min(Math.max(1, parseInt(quantityInput?.value || '1')), 100);
+
+          let uuids = [];
+          for (let i = 0; i < quantity; i++) {
+            let uuid;
+            if (version === '1') {
+              uuid = generateUUIDv1();
+            } else if (version === '7') {
+              uuid = generateUUIDv7();
+            } else {
+              uuid = generateUUIDv4();
+            }
+            uuids.push(formatUUID(uuid, format));
+          }
+
+          output.value = uuids.join('\n');
+          message.textContent = `Generated ${quantity} UUID${quantity === 1 ? '' : 's'}.`;
+          copyBtn.disabled = false;
+        } catch (e) {
+          output.value = '';
+          message.textContent = `Error: ${e instanceof Error ? e.message : 'Unknown error'}`;
+          copyBtn.disabled = true;
+        }
+      });
+
+      copyBtn?.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(output.value || '');
+        message.textContent = 'Copied to clipboard.';
+      });
+    }
+  </script>
+</BaseLayout>

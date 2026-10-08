@@ -13,6 +13,45 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'regex-explained',
+    title: 'Regular Expressions Explained: From Basics to Powerful Pattern Matching',
+    slug: 'regular-expressions-explained',
+    excerpt:
+      'Learn how regular expressions work, from their mathematical foundations to practical applications in web development and text processing.',
+    category: 'Development',
+    relatedTools: ['regex-tester'],
+    author: 'Toolshack Team',
+    publishedDate: '2025-10-08',
+    readingTime: 10,
+    contentFile: 'regex-explained.md',
+  },
+  {
+    id: 'uuid-explained',
+    title: 'UUIDs and GUIDs Explained: Creating Unique Identifiers at Scale',
+    slug: 'uuids-guids-unique-identifiers',
+    excerpt:
+      'Understand how UUIDs work, why they are essential for distributed systems, and how to choose the right UUID version for your application.',
+    category: 'Development',
+    relatedTools: ['uuid-generator'],
+    author: 'Toolshack Team',
+    publishedDate: '2025-10-07',
+    readingTime: 9,
+    contentFile: 'uuid-explained.md',
+  },
+  {
+    id: 'hash-security-explained',
+    title: 'Cryptographic Hashing Explained: How to Secure Data with MD5, SHA-1, and SHA-256',
+    slug: 'cryptographic-hashing-security',
+    excerpt:
+      'Discover how cryptographic hashing protects passwords, verifies data integrity, and powers blockchain technology—and why MD5 and SHA-1 are no longer safe.',
+    category: 'Security',
+    relatedTools: ['hash-generator'],
+    author: 'Toolshack Team',
+    publishedDate: '2025-10-06',
+    readingTime: 11,
+    contentFile: 'hash-explained.md',
+  },
+  {
     id: 'json-formatting-guide',
     title: 'How to Format JSON: A Step-by-Step Guide for Beginners',
     slug: 'how-to-format-json-step-by-step-guide',
@@ -21,7 +60,7 @@ export const blogPosts: BlogPost[] = [
     category: 'Development',
     relatedTools: ['json-formatter'],
     author: 'Toolshack Team',
-    publishedDate: '2025-10-08',
+    publishedDate: '2025-10-05',
     readingTime: 6,
     contentFile: 'json-formatting.md',
   },

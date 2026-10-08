@@ -14,6 +14,30 @@ export const mainNavigation = [
 
 export const tools = [
   {
+    title: 'Regex Tester',
+    slug: 'regex-tester',
+    href: '/tools/regex-tester/',
+    description: 'Test and debug regular expressions with instant visual feedback.',
+    category: 'Developer',
+    accent: 'sun',
+  },
+  {
+    title: 'UUID/GUID Generator',
+    slug: 'uuid-generator',
+    href: '/tools/uuid-generator/',
+    description: 'Generate universally unique identifiers in multiple formats.',
+    category: 'Developer',
+    accent: 'sun',
+  },
+  {
+    title: 'Hash Generator',
+    slug: 'hash-generator',
+    href: '/tools/hash-generator/',
+    description: 'Generate cryptographic hashes (SHA-256, SHA-512, MD5, SHA-1).',
+    category: 'Security',
+    accent: 'sun',
+  },
+  {
     title: 'Password Generator',
     slug: 'password-generator',
     href: '/tools/password-generator/',

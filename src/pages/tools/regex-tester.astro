@@ -1,0 +1,136 @@
+---
+import AdSlot from '../../components/AdSlot.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import { siteConfig } from '../../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Regex Tester',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Web',
+  description: 'Test and debug regular expressions with instant visual feedback.',
+};
+---
+
+<BaseLayout title={`Regex Tester | ${siteConfig.name}`} description="Test and debug regular expressions with visual feedback and pattern matching." schema={schema}>
+  <section class="tool-page">
+    <div class="hero compact">
+      <p class="eyebrow">Developer</p>
+      <h1>Regex Tester</h1>
+    </div>
+
+    <section class="content-card tool-explainer">
+      <p class="eyebrow">How to use</p>
+      <h2>Test regular expressions and see matches instantly</h2>
+      <p>Enter a regular expression pattern and test it against sample text. See which parts match, get detailed match information, and understand your regex pattern better.</p>
+      <p>Perfect for validating patterns, learning regex, and debugging complex expressions.</p>
+    </section>
+
+    <AdSlot label="Ad" />
+
+    <div class="tool-shell regex-shell">
+      <section class="tool-panel stack" data-regex-tool>
+        <label>
+          Pattern
+          <input type="text" data-pattern placeholder="e.g., /\b\w+@\w+\.\w+\b/gi" value="/test/gi" />
+          <span class="field-hint">Enter regex with flags (e.g., /pattern/gi)</span>
+        </label>
+
+        <label>
+          Test Text
+          <textarea data-text placeholder="Enter text to test against the pattern...">Test 123 and another test 456</textarea>
+        </label>
+
+        <div class="tool-actions">
+          <button type="button" class="primary" data-test>Test Pattern</button>
+          <button type="button" class="secondary" data-clear>Clear</button>
+        </div>
+
+        <div class="result-panel">
+          <p class="eyebrow">Results</p>
+          <div data-results style="min-height: 120px; padding: 0.75rem; background: var(--color-background); border-radius: 6px; font-family: monospace; font-size: 0.9rem; overflow-y: auto; white-space: pre-wrap; word-break: break-word;">
+            No matches yet
+          </div>
+          <p class="field-hint" data-message>Enter a pattern and text, then click Test Pattern.</p>
+        </div>
+      </section>
+    </div>
+
+    <RelatedTools currentSlug="regex-tester" />
+  </section>
+
+  <script is:inline>
+    const root = document.querySelector('[data-regex-tool]');
+
+    if (root) {
+      const patternInput = root.querySelector('[data-pattern]');
+      const textInput = root.querySelector('[data-text]');
+      const testBtn = root.querySelector('[data-test]');
+      const clearBtn = root.querySelector('[data-clear]');
+      const resultsDiv = root.querySelector('[data-results]');
+      const message = root.querySelector('[data-message]');
+
+      function parseRegex(str) {
+        const match = str.match(/^\/(.*)\/([gimsuvy]*)$/);
+        if (match) {
+          return new RegExp(match[1], match[2]);
+        }
+        throw new Error('Invalid regex format. Use /pattern/flags');
+      }
+
+      function testPattern() {
+        try {
+          const pattern = parseRegex(patternInput.value || '/test/gi');
+          const text = textInput.value;
+          const matches = [...text.matchAll(pattern)];
+
+          if (matches.length === 0) {
+            resultsDiv.textContent = 'No matches found';
+            message.textContent = 'Pattern did not match any text.';
+            return;
+          }
+
+          let result = `Found ${matches.length} match${matches.length === 1 ? '' : 'es'}:\n\n`;
+
+          matches.forEach((match, i) => {
+            result += `Match ${i + 1}: "${match[0]}"\n`;
+            if (match.index !== undefined) {
+              result += `  Position: ${match.index}\n`;
+            }
+            if (match.groups) {
+              result += `  Groups: ${JSON.stringify(match.groups)}\n`;
+            }
+            if (match.length > 1) {
+              result += `  Captured: ${match.slice(1).join(', ')}\n`;
+            }
+            result += '\n';
+          });
+
+          resultsDiv.textContent = result;
+          message.textContent = `Pattern matched successfully.`;
+        } catch (e) {
+          resultsDiv.textContent = '';
+          message.textContent = `Error: ${e instanceof Error ? e.message : 'Unknown error'}`;
+        }
+      }
+
+      testBtn?.addEventListener('click', testPattern);
+      clearBtn?.addEventListener('click', () => {
+        patternInput.value = '/test/gi';
+        textInput.value = '';
+        resultsDiv.textContent = 'No matches yet';
+        message.textContent = 'Enter a pattern and text, then click Test Pattern.';
+      });
+
+      patternInput?.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') testPattern();
+      });
+
+      textInput?.addEventListener('keyup', (e) => {
+        if (e.ctrlKey && e.key === 'Enter') testPattern();
+      });
+    }
+  </script>
+</BaseLayout>
