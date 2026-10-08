@@ -33,62 +33,74 @@ const schema = {
     <div class="tool-shell url-shell">
       <section class="tool-panel stack" data-url-tool>
         <label>
-          Input (URL or encoded text)
+          Input
           <textarea data-input placeholder="Paste URL or encoded text here...">Hello World & Special Chars!</textarea>
         </label>
 
-        <div class="field-grid">
-          <button class="btn btn-primary" data-encode>Encode</button>
-          <button class="btn btn-secondary" data-decode>Decode</button>
-          <button class="btn btn-tertiary" data-copy>Copy Output</button>
+        <div class="tool-actions">
+          <button type="button" class="primary" data-encode>Encode</button>
+          <button type="button" class="secondary" data-decode>Decode</button>
+          <button type="button" class="secondary" data-copy>Copy</button>
         </div>
 
-        <label>
-          Output
+        <div class="result-panel">
+          <p class="eyebrow">Output</p>
           <textarea data-output readonly placeholder="Encoded/decoded result will appear here..."></textarea>
-        </label>
+          <p class="field-hint" data-message>Paste text and click Encode or Decode.</p>
+        </div>
       </section>
     </div>
 
-    <AdSlot label="Ad" />
-
-    <RelatedTools />
+    <RelatedTools currentSlug="url-encoder" />
   </section>
+
+  <script is:inline>
+    const root = document.querySelector('[data-url-tool]');
+
+    if (root) {
+      const input = root.querySelector('[data-input]');
+      const output = root.querySelector('[data-output]');
+      const message = root.querySelector('[data-message]');
+      const encodeBtn = root.querySelector('[data-encode]');
+      const decodeBtn = root.querySelector('[data-decode]');
+      const copyBtn = root.querySelector('[data-copy]');
+
+      function encode() {
+        try {
+          output.value = encodeURIComponent(input.value);
+          message.textContent = 'Encoded successfully.';
+          copyBtn.disabled = false;
+        } catch (e) {
+          output.value = '';
+          message.textContent = 'Error encoding: ' + (e instanceof Error ? e.message : 'Unknown error');
+          copyBtn.disabled = true;
+        }
+      }
+
+      function decode() {
+        try {
+          output.value = decodeURIComponent(input.value);
+          message.textContent = 'Decoded successfully.';
+          copyBtn.disabled = false;
+        } catch (e) {
+          output.value = '';
+          message.textContent = 'Error decoding: ' + (e instanceof Error ? e.message : 'Unknown error');
+          copyBtn.disabled = true;
+        }
+      }
+
+      encodeBtn?.addEventListener('click', encode);
+      decodeBtn?.addEventListener('click', decode);
+
+      copyBtn?.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(output.value || '');
+        message.textContent = 'Output copied.';
+      });
+
+      input?.addEventListener('input', () => {
+        output.value = '';
+        message.textContent = 'Paste text and click Encode or Decode.';
+      });
+    }
+  </script>
 </BaseLayout>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const tool = document.querySelector('[data-url-tool]');
-    if (!tool) return;
-
-    const input = tool.querySelector('[data-input]');
-    const output = tool.querySelector('[data-output]');
-    const encodeBtn = tool.querySelector('[data-encode]');
-    const decodeBtn = tool.querySelector('[data-decode]');
-    const copyBtn = tool.querySelector('[data-copy]');
-
-    encodeBtn?.addEventListener('click', () => {
-      try {
-        output.value = encodeURIComponent(input.value);
-      } catch (e) {
-        output.value = 'Error encoding: ' + e.message;
-      }
-    });
-
-    decodeBtn?.addEventListener('click', () => {
-      try {
-        output.value = decodeURIComponent(input.value);
-      } catch (e) {
-        output.value = 'Error decoding: ' + e.message;
-      }
-    });
-
-    copyBtn?.addEventListener('click', () => {
-      navigator.clipboard.writeText(output.value);
-      copyBtn.textContent = 'Copied!';
-      setTimeout(() => {
-        copyBtn.textContent = 'Copy Output';
-      }, 2000);
-    });
-  });
-</script>

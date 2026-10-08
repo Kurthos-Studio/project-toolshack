@@ -32,91 +32,82 @@ const schema = {
 
     <div class="tool-shell timestamp-shell">
       <section class="tool-panel stack" data-timestamp-tool>
-        <label>
-          Unix Timestamp (seconds)
-          <input type="number" data-timestamp placeholder="e.g. 1633024800" />
-        </label>
-
-        <label>
-          Date and Time
-          <input type="datetime-local" data-datetime />
-        </label>
-
         <div class="field-grid">
-          <button class="btn btn-primary" data-to-date>Timestamp → Date</button>
-          <button class="btn btn-secondary" data-to-timestamp>Date → Timestamp</button>
-          <button class="btn btn-tertiary" data-now>Use Now</button>
+          <label>
+            Unix Timestamp
+            <input type="number" data-timestamp placeholder="e.g. 1633024800" />
+          </label>
+
+          <label>
+            Date and Time
+            <input type="datetime-local" data-datetime />
+          </label>
         </div>
 
-        <label>
-          Timezone
-          <select data-timezone>
-            <option value="UTC">UTC (Coordinated Universal Time)</option>
-            <option value="Local">Local Browser Time</option>
-          </select>
-        </label>
+        <div class="tool-actions">
+          <button type="button" class="primary" data-to-date>Timestamp to Date</button>
+          <button type="button" class="secondary" data-to-timestamp>Date to Timestamp</button>
+          <button type="button" class="secondary" data-now>Use Now</button>
+        </div>
 
-        <div class="info-box">
-          <p data-info-output>Ready to convert timestamps</p>
+        <div class="result-panel">
+          <p class="eyebrow">Result</p>
+          <p data-info-output class="field-hint">Enter a timestamp or date to convert.</p>
         </div>
       </section>
     </div>
 
-    <AdSlot label="Ad" />
-
-    <RelatedTools />
+    <RelatedTools currentSlug="unix-timestamp" />
   </section>
-</BaseLayout>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const tool = document.querySelector('[data-timestamp-tool]');
-    if (!tool) return;
+  <script is:inline>
+    const root = document.querySelector('[data-timestamp-tool]');
 
-    const timestampInput = tool.querySelector('[data-timestamp]');
-    const datetimeInput = tool.querySelector('[data-datetime]');
-    const toDateBtn = tool.querySelector('[data-to-date]');
-    const toTimestampBtn = tool.querySelector('[data-to-timestamp]');
-    const nowBtn = tool.querySelector('[data-now]');
-    const timezoneSelect = tool.querySelector('[data-timezone]');
-    const infoOutput = tool.querySelector('[data-info-output]');
+    if (root) {
+      const timestampInput = root.querySelector('[data-timestamp]');
+      const datetimeInput = root.querySelector('[data-datetime]');
+      const toDateBtn = root.querySelector('[data-to-date]');
+      const toTimestampBtn = root.querySelector('[data-to-timestamp]');
+      const nowBtn = root.querySelector('[data-now]');
+      const infoOutput = root.querySelector('[data-info-output]');
 
-    toDateBtn?.addEventListener('click', () => {
-      try {
-        const timestamp = parseInt(timestampInput.value);
-        if (isNaN(timestamp)) {
-          infoOutput.textContent = 'Please enter a valid timestamp';
-          return;
+      toDateBtn?.addEventListener('click', () => {
+        try {
+          const timestamp = parseInt(timestampInput.value);
+          if (isNaN(timestamp)) {
+            infoOutput.textContent = 'Please enter a valid timestamp';
+            return;
+          }
+          const date = new Date(timestamp * 1000);
+          datetimeInput.value = date.toISOString().slice(0, 16);
+          infoOutput.textContent = `Timestamp ${timestamp} = ${date.toISOString()}`;
+        } catch (e) {
+          infoOutput.textContent = 'Error: ' + (e instanceof Error ? e.message : 'Unknown error');
         }
-        const date = new Date(timestamp * 1000);
-        datetimeInput.value = date.toISOString().slice(0, 16);
-        infoOutput.textContent = `Timestamp ${timestamp} = ${date.toISOString()}`;
-      } catch (e) {
-        infoOutput.textContent = 'Error: ' + e.message;
-      }
-    });
+      });
 
-    toTimestampBtn?.addEventListener('click', () => {
-      try {
-        if (!datetimeInput.value) {
-          infoOutput.textContent = 'Please select a date and time';
-          return;
+      toTimestampBtn?.addEventListener('click', () => {
+        try {
+          if (!datetimeInput.value) {
+            infoOutput.textContent = 'Please select a date and time';
+            return;
+          }
+          const date = new Date(datetimeInput.value);
+          const timestamp = Math.floor(date.getTime() / 1000);
+          timestampInput.value = timestamp;
+          infoOutput.textContent = `${date.toISOString()} = Timestamp ${timestamp}`;
+        } catch (e) {
+          infoOutput.textContent = 'Error: ' + (e instanceof Error ? e.message : 'Unknown error');
         }
-        const date = new Date(datetimeInput.value);
-        const timestamp = Math.floor(date.getTime() / 1000);
+      });
+
+      nowBtn?.addEventListener('click', () => {
+        const now = new Date();
+        const timestamp = Math.floor(now.getTime() / 1000);
         timestampInput.value = timestamp;
-        infoOutput.textContent = `${date.toISOString()} = Timestamp ${timestamp}`;
-      } catch (e) {
-        infoOutput.textContent = 'Error: ' + e.message;
-      }
-    });
-
-    nowBtn?.addEventListener('click', () => {
-      const now = new Date();
-      const timestamp = Math.floor(now.getTime() / 1000);
-      timestampInput.value = timestamp;
-      datetimeInput.value = now.toISOString().slice(0, 16);
-      infoOutput.textContent = `Current time: ${timestamp} (${now.toISOString()})`;
-    });
-  });
-</script>
+        datetimeInput.value = now.toISOString().slice(0, 16);
+        infoOutput.textContent = `Current time: ${timestamp} (${now.toISOString()})`;
+      });
+    }
+  </script>
+</BaseLayout>

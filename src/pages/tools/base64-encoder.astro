@@ -33,64 +33,76 @@ const schema = {
     <div class="tool-shell base64-shell">
       <section class="tool-panel stack" data-base64-tool>
         <label>
-          Input (text or Base64)
+          Input
           <textarea data-input placeholder="Paste text or Base64 string here...">Hello, World!</textarea>
         </label>
 
-        <div class="field-grid">
-          <button class="btn btn-primary" data-encode>Encode to Base64</button>
-          <button class="btn btn-secondary" data-decode>Decode from Base64</button>
-          <button class="btn btn-tertiary" data-copy>Copy Output</button>
+        <div class="tool-actions">
+          <button type="button" class="primary" data-encode>Encode</button>
+          <button type="button" class="secondary" data-decode>Decode</button>
+          <button type="button" class="secondary" data-copy>Copy</button>
         </div>
 
-        <label>
-          Output
+        <div class="result-panel">
+          <p class="eyebrow">Output</p>
           <textarea data-output readonly placeholder="Encoded/decoded result will appear here..."></textarea>
-        </label>
+          <p class="field-hint" data-message>Paste text and click Encode or Decode.</p>
+        </div>
       </section>
     </div>
 
-    <AdSlot label="Ad" />
-
-    <RelatedTools />
+    <RelatedTools currentSlug="base64-encoder" />
   </section>
+
+  <script is:inline>
+    const root = document.querySelector('[data-base64-tool]');
+
+    if (root) {
+      const input = root.querySelector('[data-input]');
+      const output = root.querySelector('[data-output]');
+      const message = root.querySelector('[data-message]');
+      const encodeBtn = root.querySelector('[data-encode]');
+      const decodeBtn = root.querySelector('[data-decode]');
+      const copyBtn = root.querySelector('[data-copy]');
+
+      function encode() {
+        try {
+          const encoded = btoa(unescape(encodeURIComponent(input.value)));
+          output.value = encoded;
+          message.textContent = 'Encoded successfully.';
+          copyBtn.disabled = false;
+        } catch (e) {
+          output.value = '';
+          message.textContent = 'Error encoding: ' + (e instanceof Error ? e.message : 'Unknown error');
+          copyBtn.disabled = true;
+        }
+      }
+
+      function decode() {
+        try {
+          const decoded = decodeURIComponent(escape(atob(input.value)));
+          output.value = decoded;
+          message.textContent = 'Decoded successfully.';
+          copyBtn.disabled = false;
+        } catch (e) {
+          output.value = '';
+          message.textContent = 'Error decoding: ' + (e instanceof Error ? e.message : 'Unknown error');
+          copyBtn.disabled = true;
+        }
+      }
+
+      encodeBtn?.addEventListener('click', encode);
+      decodeBtn?.addEventListener('click', decode);
+
+      copyBtn?.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(output.value || '');
+        message.textContent = 'Output copied.';
+      });
+
+      input?.addEventListener('input', () => {
+        output.value = '';
+        message.textContent = 'Paste text and click Encode or Decode.';
+      });
+    }
+  </script>
 </BaseLayout>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const tool = document.querySelector('[data-base64-tool]');
-    if (!tool) return;
-
-    const input = tool.querySelector('[data-input]');
-    const output = tool.querySelector('[data-output]');
-    const encodeBtn = tool.querySelector('[data-encode]');
-    const decodeBtn = tool.querySelector('[data-decode]');
-    const copyBtn = tool.querySelector('[data-copy]');
-
-    encodeBtn?.addEventListener('click', () => {
-      try {
-        const encoded = btoa(unescape(encodeURIComponent(input.value)));
-        output.value = encoded;
-      } catch (e) {
-        output.value = 'Error encoding: ' + e.message;
-      }
-    });
-
-    decodeBtn?.addEventListener('click', () => {
-      try {
-        const decoded = decodeURIComponent(escape(atob(input.value)));
-        output.value = decoded;
-      } catch (e) {
-        output.value = 'Error decoding: ' + e.message;
-      }
-    });
-
-    copyBtn?.addEventListener('click', () => {
-      navigator.clipboard.writeText(output.value);
-      copyBtn.textContent = 'Copied!';
-      setTimeout(() => {
-        copyBtn.textContent = 'Copy Output';
-      }, 2000);
-    });
-  });
-</script>

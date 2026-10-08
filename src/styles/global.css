@@ -893,15 +893,11 @@ textarea {
 }
 
 .blog-category {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: var(--color-primary-light, #f0f6fc);
-  color: var(--color-primary, #0969da);
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  display: none;
+}
+
+.blog-preview-card .eyebrow {
   margin-bottom: 0.75rem;
-  width: fit-content;
 }
 
 .blog-preview-card h3 {

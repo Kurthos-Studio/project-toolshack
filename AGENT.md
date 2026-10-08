@@ -136,25 +136,156 @@ celsius_to_f = (celsius * 1.8) + 32
 
 ## Blog Post Workflow
 
+### Tool Page Structure Requirements
+
+**ALL tool pages MUST follow this exact structure and styling (applies to new tools):**
+
+#### File Location & Naming
+```
+/src/pages/tools/[tool-slug].astro
+Example: /src/pages/tools/url-encoder.astro
+```
+
+#### Mandatory Structure
+```astro
+---
+import AdSlot from '../../components/AdSlot.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import { siteConfig } from '../../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Tool Full Name',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Web',
+  description: 'One-line tool description.',
+};
+---
+
+<BaseLayout title={`Tool Name | ${siteConfig.name}`} description="..." schema={schema}>
+  <section class="tool-page">
+    <!-- Hero Section -->
+    <div class="hero compact">
+      <p class="eyebrow">Category</p>
+      <h1>Tool Full Name</h1>
+    </div>
+
+    <!-- Explainer Section -->
+    <section class="content-card tool-explainer">
+      <p class="eyebrow">How to use</p>
+      <h2>Clear action headline</h2>
+      <p>Paragraph 1: Brief explanation of what it does</p>
+      <p>Paragraph 2: Key use case or benefit</p>
+    </section>
+
+    <AdSlot label="Ad" />
+
+    <!-- Tool Interface -->
+    <div class="tool-shell [tool-name]-shell">
+      <section class="tool-panel stack" data-[tool-slug]-tool>
+        <!-- Input fields with proper labels -->
+        <label>
+          Field Name
+          <textarea data-input placeholder="..."></textarea>
+        </label>
+
+        <!-- Action buttons - MUST use tool-actions class -->
+        <div class="tool-actions">
+          <button type="button" class="primary" data-action>Primary Action</button>
+          <button type="button" class="secondary" data-secondary>Secondary Action</button>
+          <button type="button" class="secondary" data-copy>Copy</button>
+        </div>
+
+        <!-- Result panel -->
+        <div class="result-panel">
+          <p class="eyebrow">Output</p>
+          <textarea data-output readonly></textarea>
+          <p class="field-hint" data-message>Help text here</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Related tools section -->
+    <RelatedTools currentSlug="[tool-slug]" />
+  </section>
+
+  <!-- JavaScript with is:inline attribute -->
+  <script is:inline>
+    const root = document.querySelector('[data-[tool-slug]-tool]');
+    if (root) {
+      // Tool logic here
+    }
+  </script>
+</BaseLayout>
+```
+
+#### Button Styling - CRITICAL
+- **PRIMARY button:** `class="primary"` - Main action
+- **SECONDARY buttons:** `class="secondary"` - Additional actions (copy, decode, etc.)
+- **NEVER use:** `btn btn-primary`, `btn btn-secondary`, `btn btn-tertiary` (WRONG)
+- **Wrapper:** `<div class="tool-actions">` (NEVER use field-grid for buttons)
+
+#### Label Format
+- Category label MUST use: `<p class="eyebrow">Category</p>`
+- This ensures consistency with tool cards and blog post categories
+- NOT `<span>`, NOT custom classes, NOT inline styles
+
+#### JavaScript Pattern
+```javascript
+// Always use is:inline attribute on script tag
+// Always check if root exists before accessing elements
+const root = document.querySelector('[data-[tool-slug]-tool]');
+if (root) {
+  const input = root.querySelector('[data-input]');
+  // Access other elements relative to root
+  input?.addEventListener('click', () => {
+    // handler
+  });
+}
+```
+
+#### Files to Update
+1. Create: `/src/pages/tools/[tool-slug].astro`
+2. Update: `/src/data/site.ts` - Add tool to tools array:
+   ```typescript
+   {
+     title: 'Tool Full Name',
+     slug: 'tool-slug',
+     href: '/tools/tool-slug/',
+     description: 'One-line description',
+     category: 'Category',
+     accentColor: '#hex-color', // Pick unique color
+   }
+   ```
+
 ### When Adding a New Tool:
 
-1. **Create Blog Post**
+1. **Create Tool Page**
+   - Follow Tool Page Structure Requirements (above)
+   - Update `/src/data/site.ts` with tool metadata
+   - Ensure button classes are `primary` and `secondary` (NOT `btn btn-*`)
+   - Ensure category label uses `<p class="eyebrow">` (NOT `<span>`)
+   - Use `is:inline` on script tag
+
+2. **Create Blog Post**
    - Write 3,000-5,000+ words
    - Educational content, not just a tool description
    - Link to the actual tool in "How to Use" section
 
-2. **Fact-Check**
+3. **Fact-Check**
    - Verify all claims against sources
    - Check all calculations
    - Correct any historical inaccuracies
    - Document corrections
 
-3. **Add Citations**
+4. **Add Citations**
    - Minimum 5 sources per post
    - Mix of academic, official, and industry sources
    - Include full citations with URLs
 
-4. **Update Files**
+5. **Update Files**
    ```
    Add to /src/data/blog.ts:
    {
@@ -177,15 +308,22 @@ celsius_to_f = (celsius * 1.8) + 32
    Create: /src/content/blog/filename.md
    ```
 
-5. **Build & Test**
+6. **Update Main Page Blog Labels**
+   - Blog post category labels MUST use `<p class="eyebrow">` class
+   - This ensures consistency with tool category labels
+   - NOT `<span class="blog-category">` (OLD FORMAT)
+   - The `eyebrow` class provides: rounded background, small caps, proper spacing
+
+7. **Build & Test**
    ```bash
    npm run build
    # Test blog URLs render correctly
    # Verify sources section visible
    # Check no console errors
+   # Verify blog category labels match tool category styling
    ```
 
-6. **Commit**
+8. **Commit**
    ```
    git add -A
    git commit -m "feat: add blog post for [Tool Name]
@@ -280,3 +418,78 @@ npm run build | grep "page(s) built"
 - Fact audit: `/docs/blog-fact-checking-report.md`
 - Calculation audit: `/docs/blog-calculation-audit-report.md`
 - Example posts: `/src/content/blog/*.md`
+
+## 🎯 Quick Style Reference (Remember These!)
+
+### Button Classes (Tools)
+```
+✅ CORRECT:
+  <button class="primary">Action</button>
+  <button class="secondary">Secondary</button>
+
+❌ WRONG:
+  <button class="btn btn-primary">Action</button>
+  <button class="btn btn-secondary">Secondary</button>
+  <button class="btn btn-tertiary">Tertiary</button>
+```
+
+### Label/Category Classes
+```
+✅ CORRECT:
+  <p class="eyebrow">Developer</p>  <!-- Tools and blog posts -->
+
+❌ WRONG:
+  <span class="blog-category">Developer</span>
+  <span class="category">Developer</span>
+```
+
+### Tool Page Button Container
+```
+✅ CORRECT:
+  <div class="tool-actions">
+    <button class="primary">Encode</button>
+    <button class="secondary">Copy</button>
+  </div>
+
+❌ WRONG:
+  <div class="field-grid">
+    <button>Encode</button>
+    <button>Copy</button>
+  </div>
+```
+
+### Blog Labels on Main Page
+```
+✅ CORRECT:
+  {latestPosts.map((post) => (
+    <a href={...} class="blog-preview-card">
+      <p class="eyebrow">{post.category}</p>
+      ...
+    </a>
+  ))}
+
+❌ WRONG:
+  <span class="blog-category">{post.category}</span>
+```
+
+### Script Tag in Tool Pages
+```
+✅ CORRECT:
+  <script is:inline>
+    const root = document.querySelector('[data-tool-name]');
+    if (root) {
+      // tool logic
+    }
+  </script>
+
+❌ WRONG:
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Doesn't work with Astro
+    });
+  </script>
+```
+
+---
+**Last Updated:** Oct 8, 2026  
+**Remember:** Consistency = Professionalism = Trust = AdSense Approval ✨
