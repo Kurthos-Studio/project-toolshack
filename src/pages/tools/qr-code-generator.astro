@@ -34,7 +34,7 @@ const schema = {
       <section class="tool-panel stack" data-qr-tool>
         <label>
           Content
-          <textarea data-content placeholder="https://tools.kurthos.app">https://tools.kurthos.app/tools/</textarea>
+          <textarea data-content placeholder="https://tools.kurthos.app">https://tools.kurthos.app</textarea>
         </label>
 
         <div class="field-grid">
@@ -94,58 +94,50 @@ const schema = {
 
       let backgroundImage = null;
 
-      function generateSquareDots(ctx, qrImage, px, moduleSize) {
-        const qrCanvas = document.createElement('canvas');
-        qrCanvas.width = qrImage.width;
-        qrCanvas.height = qrImage.height;
-        const qrCtx = qrCanvas.getContext('2d');
-        qrCtx.drawImage(qrImage, 0, 0);
+      function generateSquareDots(ctx, qrImage, px) {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = px;
+        tempCanvas.height = px;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(qrImage, 0, 0, px, px);
         
-        const imgData = qrCtx.getImageData(0, 0, qrCanvas.width, qrCanvas.height);
-        const data = imgData.data;
-        
-        ctx.fillStyle = '#000';
-        for (let i = 0; i < data.length; i += 4) {
-          const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
-          if (brightness < 128) {
-            const pixelIndex = i / 4;
-            const col = pixelIndex % qrCanvas.width;
-            const row = Math.floor(pixelIndex / qrCanvas.width);
-            ctx.fillRect(col * moduleSize, row * moduleSize, moduleSize, moduleSize);
-          }
-        }
+        ctx.drawImage(tempCanvas, 0, 0);
       }
 
-      function generateRoundedCurves(ctx, qrImage, px, moduleSize) {
-        const qrCanvas = document.createElement('canvas');
-        qrCanvas.width = qrImage.width;
-        qrCanvas.height = qrImage.height;
-        const qrCtx = qrCanvas.getContext('2d');
-        qrCtx.drawImage(qrImage, 0, 0);
+      function generateRoundedCurves(ctx, qrImage, px) {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = px;
+        tempCanvas.height = px;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(qrImage, 0, 0, px, px);
         
-        const imgData = qrCtx.getImageData(0, 0, qrCanvas.width, qrCanvas.height);
+        const imgData = tempCtx.getImageData(0, 0, px, px);
         const data = imgData.data;
         
-        const radius = moduleSize / 2.5;
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, px, px);
         ctx.fillStyle = '#000';
+        
+        const pixelSize = Math.max(1, Math.floor(px / 29));
+        const radius = pixelSize / 2.2;
         
         for (let i = 0; i < data.length; i += 4) {
           const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
           if (brightness < 128) {
             const pixelIndex = i / 4;
-            const col = pixelIndex % qrCanvas.width;
-            const row = Math.floor(pixelIndex / qrCanvas.width);
-            const x = col * moduleSize;
-            const y = row * moduleSize;
+            const col = pixelIndex % px;
+            const row = Math.floor(pixelIndex / px);
+            const x = col;
+            const y = row;
             
             ctx.beginPath();
             ctx.moveTo(x + radius, y);
-            ctx.lineTo(x + moduleSize - radius, y);
-            ctx.quadraticCurveTo(x + moduleSize, y, x + moduleSize, y + radius);
-            ctx.lineTo(x + moduleSize, y + moduleSize - radius);
-            ctx.quadraticCurveTo(x + moduleSize, y + moduleSize, x + moduleSize - radius, y + moduleSize);
-            ctx.lineTo(x + radius, y + moduleSize);
-            ctx.quadraticCurveTo(x, y + moduleSize, x, y + moduleSize - radius);
+            ctx.lineTo(x + 1 - radius, y);
+            ctx.quadraticCurveTo(x + 1, y, x + 1, y + radius);
+            ctx.lineTo(x + 1, y + 1 - radius);
+            ctx.quadraticCurveTo(x + 1, y + 1, x + 1 - radius, y + 1);
+            ctx.lineTo(x + radius, y + 1);
+            ctx.quadraticCurveTo(x, y + 1, x, y + 1 - radius);
             ctx.lineTo(x, y + radius);
             ctx.quadraticCurveTo(x, y, x + radius, y);
             ctx.closePath();
@@ -205,9 +197,9 @@ const schema = {
           
           qrImg.onload = () => {
             if (selectedFormat === 'rounded') {
-              generateRoundedCurves(ctx, qrImg, px, Math.max(1, Math.floor(px / 29)));
+              generateRoundedCurves(ctx, qrImg, px);
             } else {
-              generateSquareDots(ctx, qrImg, px, Math.max(1, Math.floor(px / 29)));
+              generateSquareDots(ctx, qrImg, px);
             }
             
             const downloadUrl = canvas.toDataURL('image/png');
