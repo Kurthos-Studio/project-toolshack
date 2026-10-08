@@ -62,7 +62,7 @@ const schema = {
         <div class="tool-actions">
           <button type="button" class="primary" data-generate>Generate QR</button>
           <button type="button" class="secondary" data-clear-bg>Clear Background</button>
-          <a class="button secondary" data-download href="#" download="qr-code.png">Download PNG</a>
+          <button type="button" class="secondary" data-download>Download PNG</button>
         </div>
 
         <p class="field-hint" data-status>Ready to generate QR code.</p>
@@ -150,21 +150,9 @@ const schema = {
             qrCode.append(qrContainer);
 
             // Setup download
-            download.onclick = async () => {
-              try {
-                const canvas = await qrCode.getRawData('canvas');
-                canvas.toBlob((blob) => {
-                  const link = document.createElement('a');
-                  link.href = URL.createObjectURL(blob);
-                  link.download = 'qr-code.png';
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
-                  URL.revokeObjectURL(link.href);
-                });
-              } catch (e) {
-                status.textContent = 'Download error: ' + (e instanceof Error ? e.message : 'Unknown error');
-              }
+            download.onclick = (e) => {
+              e.preventDefault();
+              qrCode.download({ name: 'qr-code', extension: 'png' });
             };
 
             status.textContent = 'QR code generated. Ready to download.';
