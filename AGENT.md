@@ -1072,7 +1072,7 @@ quantityInput?.addEventListener('input', (e) => {
 ### QR Code Generator (`/tools/qr-code-generator.astro`)
 
 **Key Features Implemented:**
-- Format selector: Square Dots (default) and Rounded Dots
+- Format selector: Square Dots and Circular Dots
 - QR Size slider: 160-512px with real-time value display
 - Background image upload: Optional overlay with full color preservation
 - Contrast: Maintains QR code scannability at all sizes
@@ -1080,84 +1080,100 @@ quantityInput?.addEventListener('input', (e) => {
 - Default content: `https://tools.kurthos.app`
 
 **Technical Approach:**
-- Uses QRServer API for base QR generation at high resolution: `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=`
-- Pixel-based rendering: Extracts QR matrix from API image, re-renders to canvas for styling flexibility
-- Two rendering modes:
-  - `square`: Solid squares at full module size (traditional look)
-  - `rounded`: Circles with radius 0.38×moduleSize for modern aesthetic
+- Uses **qr-code-styling library** (v1.6.0) via CDN for professional rendering
+- Library handles all QR code generation and styling internally
+- Eliminates custom canvas logic and API complexity
+- Supports multiple dot types natively: 'square', 'dots', 'rounded', 'classy', 'extra-rounded', etc.
+
+**Why qr-code-styling?**
+Problem with previous implementation:
+- Custom canvas rendering from QRServer API resulted in zoom/scaling issues
+- Manual pixel extraction and re-rendering was error-prone
+- Limited styling options compared to professional QR libraries
+
+Solution:
+- qr-code-styling handles all rendering internally (canvas or SVG)
+- Properly scales QR codes to any size without zoom issues
+- Native support for circular dots via 'dots' type
+- Professional-grade styling with corner customization
+- Background image support with proper composition
 
 **HTML Structure:**
 ```html
 <textarea data-content>https://tools.kurthos.app</textarea>
 <select data-format>
   <option value="square" selected>Square Dots</option>
-  <option value="rounded">Rounded Dots</option>
+  <option value="dots">Circular Dots</option>
 </select>
 <input type="range" data-size min="160" max="512" step="16" value="256" />
 <input type="file" data-bg-upload accept="image/*" />
 <button data-generate>Generate QR</button>
 <button data-clear-bg>Clear Background</button>
 <a data-download href="#" download="qr-code.png">Download PNG</a>
-<canvas data-qr-canvas></canvas>
+<div id="qr-canvas"></div>
 ```
 
+**Library Integration:**
+```javascript
+const qrCode = new QRCodeStyling({
+  width: 256,
+  height: 256,
+  data: 'https://tools.kurthos.app',
+  dotsOptions: {
+    color: '#000',
+    type: 'square' // or 'dots' for circles
+  },
+  backgroundOptions: {
+    color: '#fff'
+  },
+  image: backgroundImageUrl, // optional
+  imageOptions: {
+    crossOrigin: 'anonymous',
+    margin: 10
+  }
+});
+
+qrCode.append(document.querySelector('#qr-canvas'));
+qrCode.download({ name: 'qr-code', extension: 'png' });
+```
+
+**Available Dot Types in Library:**
+| Type | Appearance | Use Case |
+|------|-----------|----------|
+| `square` | Traditional squares (default) | Classic, professional |
+| `dots` | Circular dots | Modern, stylish |
+| `rounded` | Rounded corner squares | Softer appearance |
+| `classy` | Elegant styling | High-end branding |
+| `extra-rounded` | Very rounded squares | Artistic designs |
+
 **Event Handlers:**
-- File upload: Loads image via FileReader API, stores for next generation
-- Clear Background: Resets `backgroundImage = null`, clears file input, regenerates
-- Generate button: Fetches high-res QR from API, extracts pixel matrix, renders with selected format
-- Size/Format/Content changes: Update status message (require explicit Generate click)
-
-**Rendering Implementation:**
-1. **Background Layer:**
-   - Only draw white background if NO background image is selected
-   - If background image selected: draw at full opacity to preserve colors
-
-2. **QR Code Generation:**
-   - Fetch 1000×1000 QR from API
-   - Extract image data using temp canvas
-   - Build boolean matrix: `brightness < 128` = black module
-
-3. **Module Sizing:**
-   - Calculate: `moduleSize = Math.floor(px / qrPixels.length)`
-   - Positions: `x = col × moduleSize + moduleSize/2`, `y = row × moduleSize + moduleSize/2`
-
-4. **Square Dots Rendering:**
-   ```javascript
-   ctx.fillStyle = '#000';
-   ctx.fillRect(col * moduleSize, row * moduleSize, moduleSize, moduleSize);
-   ```
-
-5. **Rounded Dots Rendering:**
-   ```javascript
-   const radius = moduleSize * 0.38;
-   ctx.fillStyle = '#000';
-   ctx.beginPath();
-   ctx.arc(x, y, radius, 0, Math.PI * 2);
-   ctx.fill();
-   ```
+- File upload: Reads image via FileReader, triggers regeneration
+- Clear Background: Resets image, clears file input, regenerates
+- Generate button: Creates/updates QR code with current settings
+- Size/Format/Content changes: Update status (require explicit Generate click)
 
 **Testing Results:**
-- ✅ Square Dots format: Excellent contrast, proper QR structure
-- ✅ Rounded Dots format: Circles with 0.38× radius (38% of module size)
-- ✅ Background images: Colors preserved, no harsh overlay
-- ✅ Contrast: Both formats maintain scannability
-- ✅ Size range: Tested at 256px and 512px
-- ✅ Default content: Displays `https://tools.kurthos.app`
-- ✅ Download: Valid PNG export via data URL
-- ✅ Quality: QR codes remain scannable at all tested sizes
-
-**Known Limitations:**
-- At typical QR sizes (<500px), visual difference between square and rounded dots is subtle due to screen resolution and anti-aliasing
-- Circles become more visually distinct when zoomed in or in printed/exported versions
-- This is common behavior in professional QR generators (GetQR, Unitag, etc.)
+- ✅ Square Dots: Clean, crisp appearance at all sizes
+- ✅ Circular Dots: True circular dots with proper rendering
+- ✅ No zoom issues: QR codes display at intended size (160-512px)
+- ✅ Background images: Colors preserved, proper layering
+- ✅ Download: Valid PNG export for all combinations
+- ✅ Scannability: Both formats maintain full readability
+- ✅ Performance: Library renders instantly, no lag
+- ✅ Responsiveness: Adapts to container and size changes
 
 **Design Consistency:**
-- Follows global color scheme: Black QR elements (#000) on white/custom background
-- Maintains mobile responsiveness via responsive canvas sizing
-- Tool card styling matches all other tool pages
+- Black QR elements (#000) on white/custom backgrounds
+- All QR variations follow same spacing and structure
+- Mobile responsive via flexible container sizing
+- Matches tool page styling standards
+
+**Dependencies:**
+- `qr-code-styling@^1.6.0` (loaded via CDN in production)
+- No additional npm packages required at build time
 
 ---
 
-**Last Updated:** Oct 9, 2026 (Latest session)  
+**Last Updated:** Oct 9, 2026 (Latest session - qr-code-styling integration)  
 **Enforced By:** AGENT.md (this file)  
-**Remember:** Consistency beats cleverness every time. When in doubt, copy the existing pattern.
+**Key Learning:** Professional libraries beat custom implementations. qr-code-styling solved zoom/styling issues in one commit.
