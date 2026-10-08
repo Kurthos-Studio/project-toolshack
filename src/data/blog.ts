@@ -77,4 +77,30 @@ export const blogPosts: BlogPost[] = [
     readingTime: 7,
     contentFile: 'qr-codes.md',
   },
+  {
+    id: 'word-unscrambling-guide',
+    title: 'Word Unscrambling: The Science Behind Finding Words in Letters',
+    slug: 'word-unscrambling-science',
+    excerpt:
+      'Explore the science, strategy, and psychology behind word unscrambling, from competitive Scrabble to how your brain recognizes patterns.',
+    category: 'Games & Puzzles',
+    relatedTools: ['word-unscrambler'],
+    author: 'Toolshack Team',
+    publishedDate: '2025-10-03',
+    readingTime: 8,
+    contentFile: 'word-unscrambling.md',
+  },
+  {
+    id: 'unit-conversion-explained',
+    title: 'Unit Conversion Explained: Mastering Measurements Across Systems',
+    slug: 'unit-conversion-systems',
+    excerpt:
+      'Understand the history of measurement systems, why conversions matter, and master converting between metric, imperial, and other units.',
+    category: 'Science & Math',
+    relatedTools: ['unit-converter'],
+    author: 'Toolshack Team',
+    publishedDate: '2025-10-02',
+    readingTime: 9,
+    contentFile: 'unit-conversion.md',
+  },
 ];

@@ -10,6 +10,8 @@ import * as passwordPost from '../../content/blog/password-security.md';
 import * as casePost from '../../content/blog/case-conversions.md';
 import * as colorPost from '../../content/blog/color-psychology.md';
 import * as qrPost from '../../content/blog/qr-codes.md';
+import * as wordPost from '../../content/blog/word-unscrambling.md';
+import * as unitPost from '../../content/blog/unit-conversion.md';
 
 const postModules: Record<string, any> = {
   'json-formatting.md': jsonPost,
@@ -17,6 +19,8 @@ const postModules: Record<string, any> = {
   'case-conversions.md': casePost,
   'color-psychology.md': colorPost,
   'qr-codes.md': qrPost,
+  'word-unscrambling.md': wordPost,
+  'unit-conversion.md': unitPost,
 };
 
 export async function getStaticPaths() {
@@ -82,4 +86,3 @@ const schema = {
     </div>
   </article>
 </BaseLayout>
-
