@@ -1009,6 +1009,62 @@ Before committing ANY styling changes:
 
 ---
 
+## 🛠️ Tool-Specific Implementation Requirements
+
+### UUID/GUID Generator Features
+
+**Quantity Input:** MUST use `<input type="range">` with slider
+- Min: 1, Max: 30
+- Wrap in flexbox container: `display: flex; align-items: center; gap: 1rem;`
+- Display element: separate `<span data-quantity-display>` showing current value
+- Update display in real-time on slider input event
+- Line reference: UUID tool implements this pattern - follow exact structure
+
+```html
+<input type="range" data-quantity value="1" min="1" max="30" style="flex: 1;" />
+<span data-quantity-display style="min-width: 3rem; text-align: center; font-weight: 600;">1</span>
+```
+
+**Event Handler:**
+```javascript
+quantityInput?.addEventListener('input', (e) => {
+  quantityDisplay.textContent = (e.target).value;
+});
+```
+
+### Regex Tester Features
+
+**Functionality Requirements:**
+1. **Method Selector:** Dropdown supporting JavaScript, PCRE, Python, PHP (note: all run as JavaScript in browser)
+2. **Pattern Format:** Must accept `/pattern/flags` format with regex parser
+3. **Results Display:** Color-coded output with inline styles
+   - **Blue (#4a9eff)** - Match count and labels
+   - **Green (#90ee90)** - Match indicators
+   - **Yellow (#ffd700)** - Highlighted matched text
+   - **Purple (#dda0dd)** - Captured groups
+   - **Red (#ff6b6b)** - Error messages
+
+**Syntax Reference Panel:**
+- Display 2-column grid of syntax reference sections
+- Sections: Character Classes, Quantifiers, Anchors, Groups & Flags
+- Use inline styles for consistent display
+- Include common regex elements: `.`, `\d`, `\w`, `\s`, `[abc]`, `*`, `+`, `?`, `^`, `$`, `\b`, `|`, `()`
+
+**Event Handlers:**
+- Test button: Parse regex, match against text, display colored results
+- Clear button: Reset all fields to defaults
+- Enter key in pattern input: Trigger test
+- Method selector change: Clear results
+
+**Implementation Notes:**
+- Use `<script is:inline>` for event handlers (client-side only)
+- Parse regex with: `const m = str.match(/^\/(.+?)\/([gimsuvy]*)$/)`
+- Match all with: `const matches = [...text.matchAll(regex)]`
+- Use `.innerHTML` with inline style spans for color coding (avoid CSS classes)
+- Test phrase: "Test 123 and another test 456" with `/test/gi` should find 2 matches
+
+---
+
 **Design Philosophy Summary:**
 
 > "One design standard, applied consistently everywhere. Blog cards, tool cards, sections, buttons, labels - all follow the same rules. This creates a professional appearance that demonstrates:
