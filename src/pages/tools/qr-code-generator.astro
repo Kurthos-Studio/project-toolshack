@@ -47,7 +47,7 @@ const schema = {
             Format
             <select data-format>
               <option value="square" selected>Square Dots</option>
-              <option value="rounded">Rounded Curves</option>
+              <option value="rounded">Rounded Dots</option>
             </select>
             <span class="field-hint">QR code style</span>
           </label>
@@ -94,54 +94,56 @@ const schema = {
 
       let backgroundImage = null;
 
-      function generateSquareDots(ctx, qrImage, px) {
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = px;
-        tempCanvas.height = px;
-        const tempCtx = tempCanvas.getContext('2d');
-        tempCtx.drawImage(qrImage, 0, 0, px, px);
-        
-        ctx.drawImage(tempCanvas, 0, 0);
-      }
-
-      function generateRoundedCurves(ctx, qrImage, px) {
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = px;
-        tempCanvas.height = px;
-        const tempCtx = tempCanvas.getContext('2d');
-        tempCtx.drawImage(qrImage, 0, 0, px, px);
-        
-        const imgData = tempCtx.getImageData(0, 0, px, px);
-        const data = imgData.data;
+      function renderQRCode(ctx, qrImage, px, selectedFormat) {
+        ctx.clearRect(0, 0, px, px);
         
         ctx.fillStyle = '#fff';
         ctx.fillRect(0, 0, px, px);
+        
+        if (backgroundImage) {
+          ctx.drawImage(backgroundImage, 0, 0, px, px);
+          applyContrastOverlay(ctx, px, px);
+        }
+        
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = qrImage.width;
+        tempCanvas.height = qrImage.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(qrImage, 0, 0);
+        
+        const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+        const data = imgData.data;
+        
+        const scaleX = px / tempCanvas.width;
+        const scaleY = px / tempCanvas.height;
+        
         ctx.fillStyle = '#000';
         
-        const pixelSize = Math.max(1, Math.floor(px / 29));
-        const radius = pixelSize / 2.2;
-        
-        for (let i = 0; i < data.length; i += 4) {
-          const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
-          if (brightness < 128) {
-            const pixelIndex = i / 4;
-            const col = pixelIndex % px;
-            const row = Math.floor(pixelIndex / px);
-            const x = col;
-            const y = row;
-            
-            ctx.beginPath();
-            ctx.moveTo(x + radius, y);
-            ctx.lineTo(x + 1 - radius, y);
-            ctx.quadraticCurveTo(x + 1, y, x + 1, y + radius);
-            ctx.lineTo(x + 1, y + 1 - radius);
-            ctx.quadraticCurveTo(x + 1, y + 1, x + 1 - radius, y + 1);
-            ctx.lineTo(x + radius, y + 1);
-            ctx.quadraticCurveTo(x, y + 1, x, y + 1 - radius);
-            ctx.lineTo(x, y + radius);
-            ctx.quadraticCurveTo(x, y, x + radius, y);
-            ctx.closePath();
-            ctx.fill();
+        if (selectedFormat === 'rounded') {
+          const radius = Math.max(1, Math.floor(scaleX / 2.2));
+          for (let i = 0; i < data.length; i += 4) {
+            const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
+            if (brightness < 128) {
+              const pixelIndex = i / 4;
+              const col = pixelIndex % tempCanvas.width;
+              const row = Math.floor(pixelIndex / tempCanvas.width);
+              const x = col * scaleX + scaleX / 2;
+              const y = row * scaleY + scaleY / 2;
+              
+              ctx.beginPath();
+              ctx.arc(x, y, radius, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        } else {
+          for (let i = 0; i < data.length; i += 4) {
+            const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
+            if (brightness < 128) {
+              const pixelIndex = i / 4;
+              const col = pixelIndex % tempCanvas.width;
+              const row = Math.floor(pixelIndex / tempCanvas.width);
+              ctx.fillRect(col * scaleX, row * scaleY, scaleX, scaleY);
+            }
           }
         }
       }
@@ -183,24 +185,12 @@ const schema = {
           canvas.height = px;
           const ctx = canvas.getContext('2d');
           
-          ctx.fillStyle = '#fff';
-          ctx.fillRect(0, 0, px, px);
-          
-          if (backgroundImage) {
-            ctx.drawImage(backgroundImage, 0, 0, px, px);
-            applyContrastOverlay(ctx, px, px);
-          }
-          
-          const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=' + px + 'x' + px + '&data=' + encodeURIComponent(text);
+          const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=' + encodeURIComponent(text);
           const qrImg = new Image();
           qrImg.crossOrigin = 'anonymous';
           
           qrImg.onload = () => {
-            if (selectedFormat === 'rounded') {
-              generateRoundedCurves(ctx, qrImg, px);
-            } else {
-              generateSquareDots(ctx, qrImg, px);
-            }
+            renderQRCode(ctx, qrImg, px, selectedFormat);
             
             const downloadUrl = canvas.toDataURL('image/png');
             download.href = downloadUrl;
@@ -231,6 +221,7 @@ const schema = {
           };
           img.onerror = () => {
             status.textContent = 'Error loading image. Please try another file.';
+            backgroundImage = null;
           };
           img.src = event.target.result;
         };
