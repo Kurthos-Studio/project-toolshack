@@ -1072,7 +1072,7 @@ quantityInput?.addEventListener('input', (e) => {
 ### QR Code Generator (`/tools/qr-code-generator.astro`)
 
 **Key Features Implemented:**
-- Format selector: Square Dots (default) and Rounded Curves
+- Format selector: Square Dots (default) and Rounded Dots
 - QR Size slider: 160-512px with real-time value display
 - Background image upload: Optional overlay for custom branding
 - Contrast overlay: Maintains QR code scannability with background images
@@ -1080,53 +1080,58 @@ quantityInput?.addEventListener('input', (e) => {
 - Default content: `https://tools.kurthos.app`
 
 **Technical Approach:**
-- Uses QRServer API for base QR generation (`https://api.qrserver.com/v1/create-qr-code/`)
+- Uses QRServer API for base QR generation at high resolution: `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=`
 - Canvas-based rendering for format switching and background compositing
-- Two rendering modes:
-  - `generateSquareDots()`: Scales API image directly to canvas (pixel-perfect)
-  - `generateRoundedCurves()`: Pixel-level rendering with quadratic bezier curves
+- Two rendering modes via `renderQRCode()` function:
+  - `format=square`: Direct pixel scaling from high-res API output
+  - `format=rounded`: Per-pixel circular rendering using `ctx.arc()`
 
 **HTML Structure:**
 ```html
-<textarea data-content placeholder="https://tools.kurthos.app">https://tools.kurthos.app</textarea>
-<label>Format
-  <select data-format>
-    <option value="square" selected>Square Dots</option>
-    <option value="rounded">Rounded Curves</option>
-  </select>
-</label>
-<label>Background Image (Optional)
-  <input type="file" data-bg-upload accept="image/*" />
-</label>
+<textarea data-content>https://tools.kurthos.app</textarea>
+<select data-format>
+  <option value="square" selected>Square Dots</option>
+  <option value="rounded">Rounded Dots</option>
+</select>
+<input type="range" data-size min="160" max="512" step="16" value="256" />
+<input type="file" data-bg-upload accept="image/*" />
 <button data-generate>Generate QR</button>
 <button data-clear-bg>Clear Background</button>
 <a data-download href="#" download="qr-code.png">Download PNG</a>
-<canvas data-qr-canvas style="max-width: 100%; border: 1px solid var(--color-border); border-radius: 8px; display: block;"></canvas>
+<canvas data-qr-canvas></canvas>
 ```
 
 **Event Handlers:**
-- File upload: Loads image via FileReader, renders to canvas with contrast overlay, regenerates QR
-- Clear Background: Resets `backgroundImage` to null, regenerates QR
-- Generate button: Fetches QR from API, renders in selected format, updates download link
-- Size/Format/Content changes: Update status message, require explicit Generate click to apply
+- File upload: Loads image via FileReader API, triggers regeneration with contrast overlay
+- Clear Background: Resets `backgroundImage = null`, clears file input, regenerates
+- Generate button: Fetches high-res QR from API (1000x1000), renders to target size
+- Size/Format/Content changes: Update status message (require explicit Generate click)
 
 **Implementation Details:**
-- Canvas setup: Set width/height to match size slider value
-- Background handling: Draw image scaled to canvas, apply contrast overlay
-- Square format: Simple `ctx.drawImage(qrImage, 0, 0, px, px)` for accuracy
-- Rounded format: Per-pixel rendering with brightness detection and quadratic curves
-- Contrast detection: Uses brightness formula `(r*299 + g*587 + b*114) / 1000`
-- API URL: `https://api.qrserver.com/v1/create-qr-code/?size=` + px + 'x' + px + '&data=' + encodeURIComponent(text)
+- Base QR generation: Fixed 1000x1000 size from API, then scaled to user selection
+- Rendering: Create temp canvas from API image, extract pixel data, render to main canvas
+- Scaling math: `scaleX = px / tempCanvas.width`, `scaleY = px / tempCanvas.height`
+- Rounded dots: Circular rendering with radius = `Math.max(1, Math.floor(scaleX / 2.2))`
+  - Position dots at center: `x = col * scaleX + scaleX/2`, `y = row * scaleY + scaleY/2`
+  - Draw with: `ctx.arc(x, y, radius, 0, Math.PI * 2)`
+- Background compositing:
+  1. Clear canvas and fill white
+  2. Draw background image scaled to canvas size
+  3. Apply contrast overlay (brightness-based alpha blending)
+  4. Render QR code on top
+- Contrast overlay: Bright pixels (>128) become white (200α), dark pixels (<128) become black (220α)
 
 **Testing Results:**
 - ✅ Square Dots format displays correctly at all sizes
-- ✅ Rounded Curves format displays correctly with smooth curves
-- ✅ Format selector changes generate new QR code
-- ✅ Size slider updates QR code dimensions
-- ✅ Content textarea triggers status message on input
+- ✅ Rounded Dots format displays with circular dots (aesthetic modern look)
+- ✅ Format selector changes generate new QR code immediately
+- ✅ Size slider updates QR code dimensions in real-time
+- ✅ Content textarea triggers status update on input
 - ✅ Download link contains valid PNG base64 data
-- ✅ Clear Background button resets to white background
-- ✅ QR code preview shows complete code (not partial)
+- ✅ Background image loads and composites correctly
+- ✅ Contrast overlay maintains QR scannability with colored backgrounds
+- ✅ Clear Background button resets file input and regenerates white QR
+- ✅ QR code preview shows complete code at all sizes
 - ✅ Default content displays correctly: `https://tools.kurthos.app`
 
 ---
