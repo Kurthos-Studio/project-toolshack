@@ -200,8 +200,8 @@ Want to estimate conversions without a tool?
 
 **Celsius to Fahrenheit:**
 - Multiply °C by 2, then add 30 (rough)
-- 20°C ≈ 70°F (rough; actually 68°F with precise formula)
-- 30°C ≈ 90°F (rough; actually 86°F with precise formula)
+- 20°C ≈ 70°F (actually 68°F)
+- 30°C ≈ 90°F (actually 86°F)
 
 **Accurate formula:** (°C × 1.8) + 32
 
