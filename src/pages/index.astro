@@ -5,7 +5,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { siteConfig, tools } from '../data/site';
 import { blogPosts } from '../data/blog';
 
-const sortedTools = [...tools].sort((a, b) => a.title.localeCompare(b.title));
+// Featured tools that should always be shown
+const featuredSlugs = ['qr-code-generator', 'regex-tester', 'password-generator', 'color-picker'];
+const featuredTools = tools.filter(t => featuredSlugs.includes(t.slug));
+
+// Remaining tools to randomly select from
+const remainingTools = tools.filter(t => !featuredSlugs.includes(t.slug));
+
+// Shuffle function
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// Get 5 random tools from remaining tools
+const randomTools = shuffleArray(remainingTools).slice(0, 5);
+
+// Combine: featured tools + random tools
+const homepageTools = [...featuredTools, ...randomTools];
+
 const latestPosts = blogPosts.slice(0, 3);
 
 const schema = {
@@ -24,16 +46,6 @@ const schema = {
         <p class="eyebrow">Overview</p>
         <h1>Useful tools that stay out of your way.</h1>
         <p class="lead">Pick a tool, use it, move on.</p>
-        <div class="hero-actions">
-          <a class="button primary" href="/tools/">Browse tools</a>
-        </div>
-      </div>
-
-      <div class="hero-panel">
-        <div class="stat-grid">
-          <div class="stat-card"><strong>{sortedTools.length}</strong><span>tools live now</span></div>
-          <div class="stat-card"><strong>{blogPosts.length}</strong><span>blog posts</span></div>
-        </div>
       </div>
     </div>
   </section>
@@ -67,7 +79,7 @@ const schema = {
       <a href="/tools/" class="link-arrow">View all tools →</a>
     </div>
     <div class="tool-grid">
-      {sortedTools.map((tool) => <ToolCard {...tool} />)}
+      {homepageTools.map((tool) => <ToolCard {...tool} />)}
     </div>
   </section>
 

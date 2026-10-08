@@ -71,10 +71,10 @@ This is faster and more reliable. A good generator:
 
 **Do This Instead:**
 Use a password manager:
-- **Bitwarden** (free, open-source)
-- **1Password** (paid, very user-friendly)
-- **KeePass** (free, local-only)
-- **Dashlane** (paid, comprehensive)
+- **[Bitwarden](https://bitwarden.com/)** (free, open-source)
+- **[1Password](https://1password.com/)** (paid, very user-friendly)
+- **[KeePass](https://keepass.info/)** (free, local-only)
+- **[Dashlane](https://www.dashlane.com/)** (paid, comprehensive)
 
 Password managers:
 - Encrypt all passwords
