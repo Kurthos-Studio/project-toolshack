@@ -94,85 +94,47 @@ const schema = {
 
       let backgroundImage = null;
 
-      function renderQRCode(ctx, qrImage, px, selectedFormat) {
-        ctx.clearRect(0, 0, px, px);
-        
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(0, 0, px, px);
-        
-        if (backgroundImage) {
-          ctx.drawImage(backgroundImage, 0, 0, px, px);
-          applyContrastOverlay(ctx, px, px);
-        }
-        
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = qrImage.width;
-        tempCanvas.height = qrImage.height;
-        const tempCtx = tempCanvas.getContext('2d');
-        tempCtx.drawImage(qrImage, 0, 0);
-        
-        const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-        const data = imgData.data;
-        
-        const scaleX = px / tempCanvas.width;
-        const scaleY = px / tempCanvas.height;
-        
+      function renderSquareDots(ctx, qrPixels, moduleSize, px) {
         ctx.fillStyle = '#000';
-        
-        if (selectedFormat === 'rounded') {
-          const radius = Math.max(1, Math.floor(scaleX / 2.2));
-          for (let i = 0; i < data.length; i += 4) {
-            const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
-            if (brightness < 128) {
-              const pixelIndex = i / 4;
-              const col = pixelIndex % tempCanvas.width;
-              const row = Math.floor(pixelIndex / tempCanvas.width);
-              const x = col * scaleX + scaleX / 2;
-              const y = row * scaleY + scaleY / 2;
-              
-              ctx.beginPath();
-              ctx.arc(x, y, radius, 0, Math.PI * 2);
-              ctx.fill();
-            }
-          }
-        } else {
-          for (let i = 0; i < data.length; i += 4) {
-            const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
-            if (brightness < 128) {
-              const pixelIndex = i / 4;
-              const col = pixelIndex % tempCanvas.width;
-              const row = Math.floor(pixelIndex / tempCanvas.width);
-              ctx.fillRect(col * scaleX, row * scaleY, scaleX, scaleY);
+        for (let row = 0; row < qrPixels.length; row++) {
+          for (let col = 0; col < qrPixels[row].length; col++) {
+            if (qrPixels[row][col]) {
+              ctx.fillRect(col * moduleSize, row * moduleSize, moduleSize, moduleSize);
             }
           }
         }
       }
 
-      function applyContrastOverlay(ctx, width, height) {
-        const imageData = ctx.getImageData(0, 0, width, height);
-        const data = imageData.data;
+      function isPositioningPattern(row, col, size) {
+        // Top-left
+        if (row < 7 && col < 7) return true;
+        // Top-right
+        if (row < 7 && col >= size - 7) return true;
+        // Bottom-left
+        if (row >= size - 7 && col < 7) return true;
+        return false;
+      }
+
+      function renderRoundedDots(ctx, qrPixels, moduleSize, px) {
+        const size = qrPixels.length;
+        // Smaller radius creates visible spacing, making dots clearly distinct from squares
+        const radius = moduleSize * 0.38;
         
-        for (let i = 0; i < data.length; i += 4) {
-          const r = data[i];
-          const g = data[i + 1];
-          const b = data[i + 2];
-          
-          const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-          
-          if (brightness > 128) {
-            data[i] = 255;
-            data[i + 1] = 255;
-            data[i + 2] = 255;
-            data[i + 3] = 200;
-          } else {
-            data[i] = 0;
-            data[i + 1] = 0;
-            data[i + 2] = 0;
-            data[i + 3] = 220;
+        ctx.fillStyle = '#000';
+        
+        for (let row = 0; row < size; row++) {
+          for (let col = 0; col < size; col++) {
+            if (qrPixels[row][col]) {
+              const x = col * moduleSize + moduleSize / 2;
+              const y = row * moduleSize + moduleSize / 2;
+              
+              // Draw circles with visible spacing
+              ctx.beginPath();
+              ctx.arc(x, y, radius, 0, Math.PI * 2);
+              ctx.fill();
+            }
           }
         }
-        
-        ctx.putImageData(imageData, 0, 0);
       }
 
       async function generateQR() {
@@ -185,12 +147,47 @@ const schema = {
           canvas.height = px;
           const ctx = canvas.getContext('2d');
           
+          // Only draw white background if no background image
+          if (!backgroundImage) {
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, px, px);
+          } else {
+            // Draw background image at full opacity to preserve colors
+            ctx.drawImage(backgroundImage, 0, 0, px, px);
+          }
+          
           const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=' + encodeURIComponent(text);
           const qrImg = new Image();
           qrImg.crossOrigin = 'anonymous';
           
           qrImg.onload = () => {
-            renderQRCode(ctx, qrImg, px, selectedFormat);
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = qrImg.width;
+            tempCanvas.height = qrImg.height;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(qrImg, 0, 0);
+            
+            const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const data = imgData.data;
+            
+            const qrPixels = [];
+            for (let i = 0; i < tempCanvas.height; i++) {
+              const row = [];
+              for (let j = 0; j < tempCanvas.width; j++) {
+                const idx = (i * tempCanvas.width + j) * 4;
+                const brightness = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
+                row.push(brightness < 128);
+              }
+              qrPixels.push(row);
+            }
+            
+            const moduleSize = Math.max(1, Math.floor(px / qrPixels.length));
+            
+            if (selectedFormat === 'rounded') {
+              renderRoundedDots(ctx, qrPixels, moduleSize, px);
+            } else {
+              renderSquareDots(ctx, qrPixels, moduleSize, px);
+            }
             
             const downloadUrl = canvas.toDataURL('image/png');
             download.href = downloadUrl;
