@@ -3,8 +3,10 @@ import AdSlot from '../components/AdSlot.astro';
 import ToolCard from '../components/ToolCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { siteConfig, tools } from '../data/site';
+import { blogPosts } from '../data/blog';
 
 const sortedTools = [...tools].sort((a, b) => a.title.localeCompare(b.title));
+const latestPosts = blogPosts.slice(0, 3);
 
 const schema = {
   '@context': 'https://schema.org',
@@ -19,7 +21,7 @@ const schema = {
   <section class="hero">
     <div class="hero-grid">
       <div>
-        <p class="eyebrow">Quick tools</p>
+        <p class="eyebrow">Overview</p>
         <h1>Useful tools that stay out of your way.</h1>
         <p class="lead">Pick a tool, use it, move on.</p>
         <div class="hero-actions">
@@ -30,10 +32,30 @@ const schema = {
       <div class="hero-panel">
         <div class="stat-grid">
           <div class="stat-card"><strong>{sortedTools.length}</strong><span>tools live now</span></div>
-          <div class="stat-card"><strong>Fast</strong><span>browser-side logic</span></div>
+          <div class="stat-card"><strong>{blogPosts.length}</strong><span>blog posts</span></div>
           <div class="stat-card"><strong>Clean</strong><span>simple pages</span></div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2>Latest from the blog</h2>
+        <p>Learn about the tools and concepts behind them</p>
+      </div>
+      <a href="/blog/" class="link-arrow">View all posts →</a>
+    </div>
+    <div class="blog-preview-grid">
+      {latestPosts.map((post) => (
+        <a href={`/blog/${post.slug}/`} class="blog-preview-card">
+          <span class="blog-category">{post.category}</span>
+          <h3>{post.title}</h3>
+          <p>{post.excerpt}</p>
+          <span class="blog-meta">{post.readingTime} min read</span>
+        </a>
+      ))}
     </div>
   </section>
 

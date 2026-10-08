@@ -1,0 +1,96 @@
+---
+import AdSlot from '../../components/AdSlot.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import { siteConfig } from '../../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Base64 Encoder/Decoder',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Web',
+  description: 'Encode text and data to Base64, or decode Base64 strings.',
+};
+---
+
+<BaseLayout title={`Base64 Encoder/Decoder | ${siteConfig.name}`} description="Encode and decode Base64 text easily." schema={schema}>
+  <section class="tool-page">
+    <div class="hero compact">
+      <p class="eyebrow">Developer</p>
+      <h1>Base64 Encoder/Decoder</h1>
+    </div>
+
+    <section class="content-card tool-explainer">
+      <p class="eyebrow">How to use</p>
+      <h2>Convert text and data to and from Base64 encoding</h2>
+      <p>Paste text or Base64 to convert between formats. Base64 encoding is used in emails, APIs, data URIs, and authentication.</p>
+      <p>Essential for developers working with APIs, image data, and secure data transmission.</p>
+    </section>
+
+    <AdSlot label="Ad" />
+
+    <div class="tool-shell base64-shell">
+      <section class="tool-panel stack" data-base64-tool>
+        <label>
+          Input (text or Base64)
+          <textarea data-input placeholder="Paste text or Base64 string here...">Hello, World!</textarea>
+        </label>
+
+        <div class="field-grid">
+          <button class="btn btn-primary" data-encode>Encode to Base64</button>
+          <button class="btn btn-secondary" data-decode>Decode from Base64</button>
+          <button class="btn btn-tertiary" data-copy>Copy Output</button>
+        </div>
+
+        <label>
+          Output
+          <textarea data-output readonly placeholder="Encoded/decoded result will appear here..."></textarea>
+        </label>
+      </section>
+    </div>
+
+    <AdSlot label="Ad" />
+
+    <RelatedTools />
+  </section>
+</BaseLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tool = document.querySelector('[data-base64-tool]');
+    if (!tool) return;
+
+    const input = tool.querySelector('[data-input]');
+    const output = tool.querySelector('[data-output]');
+    const encodeBtn = tool.querySelector('[data-encode]');
+    const decodeBtn = tool.querySelector('[data-decode]');
+    const copyBtn = tool.querySelector('[data-copy]');
+
+    encodeBtn?.addEventListener('click', () => {
+      try {
+        const encoded = btoa(unescape(encodeURIComponent(input.value)));
+        output.value = encoded;
+      } catch (e) {
+        output.value = 'Error encoding: ' + e.message;
+      }
+    });
+
+    decodeBtn?.addEventListener('click', () => {
+      try {
+        const decoded = decodeURIComponent(escape(atob(input.value)));
+        output.value = decoded;
+      } catch (e) {
+        output.value = 'Error decoding: ' + e.message;
+      }
+    });
+
+    copyBtn?.addEventListener('click', () => {
+      navigator.clipboard.writeText(output.value);
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => {
+        copyBtn.textContent = 'Copy Output';
+      }, 2000);
+    });
+  });
+</script>

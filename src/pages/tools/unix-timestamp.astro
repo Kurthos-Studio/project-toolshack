@@ -1,0 +1,122 @@
+---
+import AdSlot from '../../components/AdSlot.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import { siteConfig } from '../../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Unix Timestamp Converter',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Web',
+  description: 'Convert between Unix timestamps and human-readable dates.',
+};
+---
+
+<BaseLayout title={`Unix Timestamp Converter | ${siteConfig.name}`} description="Convert Unix timestamps to dates and vice versa." schema={schema}>
+  <section class="tool-page">
+    <div class="hero compact">
+      <p class="eyebrow">Developer</p>
+      <h1>Unix Timestamp Converter</h1>
+    </div>
+
+    <section class="content-card tool-explainer">
+      <p class="eyebrow">How to use</p>
+      <h2>Convert between Unix timestamps and human-readable dates</h2>
+      <p>Enter a Unix timestamp to see the date and time, or enter a date to get the Unix timestamp. Handles milliseconds and timezones.</p>
+      <p>Essential for developers working with logs, APIs, databases, and scheduling systems.</p>
+    </section>
+
+    <AdSlot label="Ad" />
+
+    <div class="tool-shell timestamp-shell">
+      <section class="tool-panel stack" data-timestamp-tool>
+        <label>
+          Unix Timestamp (seconds)
+          <input type="number" data-timestamp placeholder="e.g. 1633024800" />
+        </label>
+
+        <label>
+          Date and Time
+          <input type="datetime-local" data-datetime />
+        </label>
+
+        <div class="field-grid">
+          <button class="btn btn-primary" data-to-date>Timestamp → Date</button>
+          <button class="btn btn-secondary" data-to-timestamp>Date → Timestamp</button>
+          <button class="btn btn-tertiary" data-now>Use Now</button>
+        </div>
+
+        <label>
+          Timezone
+          <select data-timezone>
+            <option value="UTC">UTC (Coordinated Universal Time)</option>
+            <option value="Local">Local Browser Time</option>
+          </select>
+        </label>
+
+        <div class="info-box">
+          <p data-info-output>Ready to convert timestamps</p>
+        </div>
+      </section>
+    </div>
+
+    <AdSlot label="Ad" />
+
+    <RelatedTools />
+  </section>
+</BaseLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tool = document.querySelector('[data-timestamp-tool]');
+    if (!tool) return;
+
+    const timestampInput = tool.querySelector('[data-timestamp]');
+    const datetimeInput = tool.querySelector('[data-datetime]');
+    const toDateBtn = tool.querySelector('[data-to-date]');
+    const toTimestampBtn = tool.querySelector('[data-to-timestamp]');
+    const nowBtn = tool.querySelector('[data-now]');
+    const timezoneSelect = tool.querySelector('[data-timezone]');
+    const infoOutput = tool.querySelector('[data-info-output]');
+
+    toDateBtn?.addEventListener('click', () => {
+      try {
+        const timestamp = parseInt(timestampInput.value);
+        if (isNaN(timestamp)) {
+          infoOutput.textContent = 'Please enter a valid timestamp';
+          return;
+        }
+        const date = new Date(timestamp * 1000);
+        datetimeInput.value = date.toISOString().slice(0, 16);
+        infoOutput.textContent = `Timestamp ${timestamp} = ${date.toISOString()}`;
+      } catch (e) {
+        infoOutput.textContent = 'Error: ' + e.message;
+      }
+    });
+
+    toTimestampBtn?.addEventListener('click', () => {
+      try {
+        if (!datetimeInput.value) {
+          infoOutput.textContent = 'Please select a date and time';
+          return;
+        }
+        const date = new Date(datetimeInput.value);
+        const timestamp = Math.floor(date.getTime() / 1000);
+        timestampInput.value = timestamp;
+        infoOutput.textContent = `${date.toISOString()} = Timestamp ${timestamp}`;
+      } catch (e) {
+        infoOutput.textContent = 'Error: ' + e.message;
+      }
+    });
+
+    nowBtn?.addEventListener('click', () => {
+      const now = new Date();
+      const timestamp = Math.floor(now.getTime() / 1000);
+      timestampInput.value = timestamp;
+      datetimeInput.value = now.toISOString().slice(0, 16);
+      infoOutput.textContent = `Current time: ${timestamp} (${now.toISOString()})`;
+    });
+  });
+</script>

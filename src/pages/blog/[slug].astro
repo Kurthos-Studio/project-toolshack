@@ -12,6 +12,9 @@ import * as colorPost from '../../content/blog/color-psychology.md';
 import * as qrPost from '../../content/blog/qr-codes.md';
 import * as wordPost from '../../content/blog/word-unscrambling.md';
 import * as unitPost from '../../content/blog/unit-conversion.md';
+import * as urlPost from '../../content/blog/url-encoding.md';
+import * as base64Post from '../../content/blog/base64-encoding.md';
+import * as timestampPost from '../../content/blog/unix-timestamp.md';
 
 const postModules: Record<string, any> = {
   'json-formatting.md': jsonPost,
@@ -21,6 +24,9 @@ const postModules: Record<string, any> = {
   'qr-codes.md': qrPost,
   'word-unscrambling.md': wordPost,
   'unit-conversion.md': unitPost,
+  'url-encoding.md': urlPost,
+  'base64-encoding.md': base64Post,
+  'unix-timestamp.md': timestampPost,
 };
 
 export async function getStaticPaths() {

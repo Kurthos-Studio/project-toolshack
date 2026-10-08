@@ -69,4 +69,28 @@ export const tools = [
     category: 'Utility',
     accent: 'mint',
   },
+  {
+    title: 'URL Encoder/Decoder',
+    slug: 'url-encoder',
+    href: '/tools/url-encoder/',
+    description: 'Encode URLs and decode encoded strings instantly.',
+    category: 'Developer',
+    accent: 'sun',
+  },
+  {
+    title: 'Base64 Encoder/Decoder',
+    slug: 'base64-encoder',
+    href: '/tools/base64-encoder/',
+    description: 'Encode text to Base64 or decode Base64 strings quickly.',
+    category: 'Developer',
+    accent: 'sun',
+  },
+  {
+    title: 'Unix Timestamp Converter',
+    slug: 'unix-timestamp',
+    href: '/tools/unix-timestamp/',
+    description: 'Convert Unix timestamps to dates and vice versa.',
+    category: 'Developer',
+    accent: 'sun',
+  },
 ];

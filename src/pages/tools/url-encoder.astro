@@ -1,0 +1,94 @@
+---
+import AdSlot from '../../components/AdSlot.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import { siteConfig } from '../../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'URL Encoder/Decoder',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Web',
+  description: 'Encode and decode URLs, handling special characters and spaces.',
+};
+---
+
+<BaseLayout title={`URL Encoder/Decoder | ${siteConfig.name}`} description="Encode and decode URLs with special characters." schema={schema}>
+  <section class="tool-page">
+    <div class="hero compact">
+      <p class="eyebrow">Developer</p>
+      <h1>URL Encoder/Decoder</h1>
+    </div>
+
+    <section class="content-card tool-explainer">
+      <p class="eyebrow">How to use</p>
+      <h2>Encode URLs and decode encoded strings instantly</h2>
+      <p>Paste a URL or encoded string to convert between formats. Special characters like spaces, &, ?, and # are handled automatically.</p>
+      <p>Perfect for working with query parameters, API calls, and web development.</p>
+    </section>
+
+    <AdSlot label="Ad" />
+
+    <div class="tool-shell url-shell">
+      <section class="tool-panel stack" data-url-tool>
+        <label>
+          Input (URL or encoded text)
+          <textarea data-input placeholder="Paste URL or encoded text here...">Hello World & Special Chars!</textarea>
+        </label>
+
+        <div class="field-grid">
+          <button class="btn btn-primary" data-encode>Encode</button>
+          <button class="btn btn-secondary" data-decode>Decode</button>
+          <button class="btn btn-tertiary" data-copy>Copy Output</button>
+        </div>
+
+        <label>
+          Output
+          <textarea data-output readonly placeholder="Encoded/decoded result will appear here..."></textarea>
+        </label>
+      </section>
+    </div>
+
+    <AdSlot label="Ad" />
+
+    <RelatedTools />
+  </section>
+</BaseLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tool = document.querySelector('[data-url-tool]');
+    if (!tool) return;
+
+    const input = tool.querySelector('[data-input]');
+    const output = tool.querySelector('[data-output]');
+    const encodeBtn = tool.querySelector('[data-encode]');
+    const decodeBtn = tool.querySelector('[data-decode]');
+    const copyBtn = tool.querySelector('[data-copy]');
+
+    encodeBtn?.addEventListener('click', () => {
+      try {
+        output.value = encodeURIComponent(input.value);
+      } catch (e) {
+        output.value = 'Error encoding: ' + e.message;
+      }
+    });
+
+    decodeBtn?.addEventListener('click', () => {
+      try {
+        output.value = decodeURIComponent(input.value);
+      } catch (e) {
+        output.value = 'Error decoding: ' + e.message;
+      }
+    });
+
+    copyBtn?.addEventListener('click', () => {
+      navigator.clipboard.writeText(output.value);
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => {
+        copyBtn.textContent = 'Copy Output';
+      }, 2000);
+    });
+  });
+</script>

@@ -834,3 +834,108 @@ textarea {
     width: 100%;
   }
 }
+
+/* Blog Preview Section */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
+.section-header p {
+  color: var(--color-text-secondary, #666);
+  margin: 0.5rem 0 0 0;
+}
+
+.link-arrow {
+  color: var(--color-primary, #0969da);
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  align-self: center;
+  transition: color 0.2s;
+}
+
+.link-arrow:hover {
+  color: var(--color-primary-dark, #0860ca);
+}
+
+.blog-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.blog-preview-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border, #e1e4e8);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  background: var(--color-background, #fff);
+}
+
+.blog-preview-card:hover {
+  border-color: var(--color-primary, #0969da);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.blog-category {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--color-primary-light, #f0f6fc);
+  color: var(--color-primary, #0969da);
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  width: fit-content;
+}
+
+.blog-preview-card h3 {
+  margin: 0.5rem 0 1rem 0;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  color: var(--color-text-primary, #111);
+}
+
+.blog-preview-card p {
+  flex-grow: 1;
+  margin: 0 0 1rem 0;
+  color: var(--color-text-secondary, #666);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.blog-meta {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #666);
+  margin-top: auto;
+}
+
+@media (max-width: 768px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .link-arrow {
+    align-self: flex-start;
+  }
+
+  .blog-preview-grid {
+    grid-template-columns: 1fr;
+  }
+}

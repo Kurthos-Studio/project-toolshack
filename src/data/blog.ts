@@ -103,4 +103,43 @@ export const blogPosts: BlogPost[] = [
     readingTime: 9,
     contentFile: 'unit-conversion.md',
   },
+  {
+    id: 'url-encoding-explained',
+    title: 'URLs Explained: Encoding, Special Characters & Why They Matter',
+    slug: 'urls-encoding-special-characters',
+    excerpt:
+      'Learn how URL encoding works, why special characters must be escaped, and why proper URLs matter for SEO and functionality.',
+    category: 'Development',
+    relatedTools: ['url-encoder'],
+    author: 'Toolshack Team',
+    publishedDate: '2025-10-01',
+    readingTime: 9,
+    contentFile: 'url-encoding.md',
+  },
+  {
+    id: 'base64-encoding-explained',
+    title: 'The Hidden Language: Understanding Base64 Encoding',
+    slug: 'base64-encoding-guide',
+    excerpt:
+      'Discover how Base64 encoding enables binary data to travel safely through email, APIs, and web services.',
+    category: 'Development',
+    relatedTools: ['base64-encoder'],
+    author: 'Toolshack Team',
+    publishedDate: '2025-09-30',
+    readingTime: 9,
+    contentFile: 'base64-encoding.md',
+  },
+  {
+    id: 'unix-timestamp-guide',
+    title: 'Time in Computing: Understanding Unix Timestamps & Time Zones',
+    slug: 'unix-timestamps-time-zones',
+    excerpt:
+      'Learn how computers represent time using Unix timestamps and the complexity of time zones, daylight saving, and synchronization.',
+    category: 'Development',
+    relatedTools: ['unix-timestamp'],
+    author: 'Toolshack Team',
+    publishedDate: '2025-09-29',
+    readingTime: 10,
+    contentFile: 'unix-timestamp.md',
+  },
 ];
