@@ -40,7 +40,7 @@ const schema = {
             <option value="python">Python</option>
             <option value="php">PHP</option>
           </select>
-          <span class="field-hint">Different regex flavors</span>
+          <span class="field-hint">Different regex flavors (runs as JavaScript)</span>
         </label>
 
         <label>
@@ -70,74 +70,239 @@ const schema = {
     </div>
 
     <section class="content-card">
-      <p class="eyebrow">Regex Syntax Reference</p>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-        <div>
-          <h3>Character Classes</h3>
-          <dl style="font-size: 0.875rem;">
-            <dt style="font-family: monospace; font-weight: 600;">.</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Any character except newline</dd>
-            <dt style="font-family: monospace; font-weight: 600;">\\d</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Digit (0-9)</dd>
-            <dt style="font-family: monospace; font-weight: 600;">\\w</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Word character (a-z, A-Z, 0-9, _)</dd>
-            <dt style="font-family: monospace; font-weight: 600;">\\s</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Whitespace (space, tab, newline)</dd>
-            <dt style="font-family: monospace; font-weight: 600;">[abc]</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">a, b, or c</dd>
-            <dt style="font-family: monospace; font-weight: 600;">[a-z]</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Range from a to z</dd>
-            <dt style="font-family: monospace; font-weight: 600;">[^abc]</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">NOT a, b, or c</dd>
-          </dl>
+      <p class="eyebrow">Syntax Reference</p>
+      <p style="font-size: 0.9rem; color: #666; margin-bottom: 1.5rem;">Reference updates based on selected method. Note: Patterns run as JavaScript; some features may differ from native implementations.</p>
+
+      <div data-ref-container>
+
+        <!-- JAVASCRIPT REFERENCE -->
+        <div data-ref="javascript" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div>
+            <h3>Character Classes</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">.</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Any character except newline</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\d</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Digit (0-9)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\w</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Word character (a-z, A-Z, 0-9, _)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\s</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Whitespace</dd>
+              <dt style="font-family: monospace; font-weight: 600;">[abc]</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">a, b, or c</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Groups &amp; Flags</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">(abc)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Capturing group</dd>
+              <dt style="font-family: monospace; font-weight: 600;">(?:abc)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Non-capturing group</dd>
+              <dt style="font-family: monospace; font-weight: 600;">(?&lt;name&gt;...)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Named group</dd>
+              <dt style="font-family: monospace; font-weight: 600;">g, i, m, s, u, y</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Flags: Global, ignore case, multiline, dotAll, unicode, sticky</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Quantifiers</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">*</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">0 or more</dd>
+              <dt style="font-family: monospace; font-weight: 600;">+</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">1 or more</dd>
+              <dt style="font-family: monospace; font-weight: 600;">?</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">0 or 1</dd>
+              <dt style="font-family: monospace; font-weight: 600;">&#123;n,m&#125;</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Between n and m times</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Anchors &amp; Assertions</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">^</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Start of line/string</dd>
+              <dt style="font-family: monospace; font-weight: 600;">$</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">End of line/string</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\b</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Word boundary</dd>
+              <dt style="font-family: monospace; font-weight: 600;">|</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">OR - alternation</dd>
+            </dl>
+          </div>
         </div>
-        <div>
-          <h3>Quantifiers</h3>
-          <dl style="font-size: 0.875rem;">
-            <dt style="font-family: monospace; font-weight: 600;">*</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">0 or more</dd>
-            <dt style="font-family: monospace; font-weight: 600;">+</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">1 or more</dd>
-            <dt style="font-family: monospace; font-weight: 600;">?</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">0 or 1</dd>
-            <dt style="font-family: monospace; font-weight: 600;">&#123;n&#125;</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Exactly n times</dd>
-            <dt style="font-family: monospace; font-weight: 600;">&#123;n,&#125;</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">n or more times</dd>
-            <dt style="font-family: monospace; font-weight: 600;">&#123;n,m&#125;</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Between n and m times</dd>
-          </dl>
+
+        <!-- PYTHON REFERENCE -->
+        <div data-ref="python" style="display: none; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div>
+            <h3>Character Classes</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">.</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Any character except newline (unless DOTALL)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\d</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Digit (0-9)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\w</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Word character (a-z, A-Z, 0-9, _)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\s</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Whitespace</dd>
+              <dt style="font-family: monospace; font-weight: 600;">[abc]</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">a, b, or c</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Named Groups (Python)</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">(?P&lt;name&gt;...)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Named group (Python syntax)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">(?P=name)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Backreference to named group</dd>
+              <dt style="font-family: monospace; font-weight: 600;">(?:abc)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Non-capturing group</dd>
+              <dt style="font-family: monospace; font-weight: 600;">(abc)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Capturing group</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Quantifiers</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">*</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">0 or more</dd>
+              <dt style="font-family: monospace; font-weight: 600;">+</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">1 or more</dd>
+              <dt style="font-family: monospace; font-weight: 600;">?</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">0 or 1</dd>
+              <dt style="font-family: monospace; font-weight: 600;">&#123;n,m&#125;</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Between n and m times</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Flags (re.CONSTANT)</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">re.I, re.IGNORECASE</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Case-insensitive matching</dd>
+              <dt style="font-family: monospace; font-weight: 600;">re.M, re.MULTILINE</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">^ and $ per line</dd>
+              <dt style="font-family: monospace; font-weight: 600;">re.S, re.DOTALL</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Dot matches newline</dd>
+              <dt style="font-family: monospace; font-weight: 600;">re.X, re.VERBOSE</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Ignore whitespace/comments</dd>
+            </dl>
+          </div>
         </div>
-        <div>
-          <h3>Anchors</h3>
-          <dl style="font-size: 0.875rem;">
-            <dt style="font-family: monospace; font-weight: 600;">^</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Start of line/string</dd>
-            <dt style="font-family: monospace; font-weight: 600;">$</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">End of line/string</dd>
-            <dt style="font-family: monospace; font-weight: 600;">\\b</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Word boundary</dd>
-            <dt style="font-family: monospace; font-weight: 600;">\\B</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Non-word boundary</dd>
-            <dt style="font-family: monospace; font-weight: 600;">|</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">OR - alternation</dd>
-          </dl>
+
+        <!-- PCRE REFERENCE -->
+        <div data-ref="pcre" style="display: none; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div>
+            <h3>Character Classes</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">.</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Any character except newline (unless /s)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\d</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Digit (0-9)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\w</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Word character</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\s</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Whitespace</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\h, \\v</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Horizontal/vertical whitespace</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Named Groups &amp; Advanced</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">(?&lt;name&gt;...)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Named group</dd>
+              <dt style="font-family: monospace; font-weight: 600;">(?&lt;=...)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Positive lookbehind</dd>
+              <dt style="font-family: monospace; font-weight: 600;">(?&lt;!...)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Negative lookbehind</dd>
+              <dt style="font-family: monospace; font-weight: 600;">(?&gt;...)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Atomic group</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Quantifiers</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">*</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">0 or more (greedy)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">+</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">1 or more (greedy)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">*?, +?</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Non-greedy versions</dd>
+              <dt style="font-family: monospace; font-weight: 600;">&#123;n,m&#125;</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Between n and m times</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Flags (modifiers)</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">i, m, s, x</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Case-insensitive, multiline, dotAll, extended</dd>
+              <dt style="font-family: monospace; font-weight: 600;">U</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Ungreedy (inverts quantifiers)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">A, D</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Anchors at start/end only</dd>
+            </dl>
+          </div>
         </div>
-        <div>
-          <h3>Groups & Flags</h3>
-          <dl style="font-size: 0.875rem;">
-            <dt style="font-family: monospace; font-weight: 600;">(abc)</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Capturing group</dd>
-            <dt style="font-family: monospace; font-weight: 600;">(?:abc)</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Non-capturing group</dd>
-            <dt style="font-family: monospace; font-weight: 600;">g</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Global match (find all)</dd>
-            <dt style="font-family: monospace; font-weight: 600;">i</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Case-insensitive</dd>
-            <dt style="font-family: monospace; font-weight: 600;">m</dt>
-            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Multiline mode</dd>
-          </dl>
+
+        <!-- PHP REFERENCE -->
+        <div data-ref="php" style="display: none; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div>
+            <h3>Character Classes</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">.</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Any character except newline (unless /s)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\d</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Digit (0-9)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\w</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Word character</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\s</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Whitespace</dd>
+              <dt style="font-family: monospace; font-weight: 600;">\\p&#123;L&#125;</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Unicode letters (if /u flag)</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Named Groups (Perl Syntax)</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">(?P&lt;name&gt;...)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Named group (Perl-compatible)</dd>
+              <dt style="font-family: monospace; font-weight: 600;">(?&lt;=...)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Positive lookbehind</dd>
+              <dt style="font-family: monospace; font-weight: 600;">(?&lt;!...)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Negative lookbehind</dd>
+              <dt style="font-family: monospace; font-weight: 600;">(?:abc)</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Non-capturing group</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Quantifiers</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">*</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">0 or more</dd>
+              <dt style="font-family: monospace; font-weight: 600;">+</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">1 or more</dd>
+              <dt style="font-family: monospace; font-weight: 600;">?</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">0 or 1</dd>
+              <dt style="font-family: monospace; font-weight: 600;">&#123;n,m&#125;</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Between n and m times</dd>
+            </dl>
+          </div>
+          <div>
+            <h3>Flags (PCRE modifiers)</h3>
+            <dl style="font-size: 0.875rem;">
+              <dt style="font-family: monospace; font-weight: 600;">i, m, s, x</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Case-insensitive, multiline, dotAll, extended</dd>
+              <dt style="font-family: monospace; font-weight: 600;">u</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Unicode support</dd>
+              <dt style="font-family: monospace; font-weight: 600;">A, D, U</dt>
+              <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Anchors, end-of-string, ungreedy</dd>
+            </dl>
+          </div>
         </div>
+
       </div>
     </section>
 
@@ -153,6 +318,15 @@ const schema = {
     const clearBtn = root.querySelector('[data-clear]');
     const resultsDiv = root.querySelector('[data-results]');
     const messageDiv = root.querySelector('[data-message]');
+    const refContainer = document.querySelector('[data-ref-container]');
+
+    function showReference(method) {
+      const allRefs = refContainer.querySelectorAll('[data-ref]');
+      allRefs.forEach(el => el.style.display = 'none');
+      
+      const targetRef = refContainer.querySelector('[data-ref="' + method + '"]');
+      if (targetRef) targetRef.style.display = 'grid';
+    }
 
     function parseRegex(str) {
       const m = str.match(/^\/(.+?)\/([gimsuvy]*)$/);
@@ -214,9 +388,12 @@ const schema = {
       if (e.key === 'Enter') testPattern();
     });
 
-    methodSel.addEventListener('change', () => {
+    methodSel.addEventListener('change', (e) => {
+      showReference(e.target.value);
       resultsDiv.textContent = 'No matches';
       messageDiv.textContent = 'Method changed';
     });
+
+    showReference('javascript');
   </script>
 </BaseLayout>
