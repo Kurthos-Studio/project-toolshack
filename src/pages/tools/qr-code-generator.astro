@@ -150,8 +150,13 @@ const schema = {
             qrCode.append(qrContainer);
 
             // Setup download
-            download.onclick = () => {
-              qrCode.download({ name: 'qr-code', extension: 'png' });
+            download.onclick = async () => {
+              const canvas = await qrCode.getRawData('png');
+              const link = document.createElement('a');
+              link.href = URL.createObjectURL(canvas);
+              link.download = 'qr-code.png';
+              link.click();
+              URL.revokeObjectURL(link.href);
             };
 
             status.textContent = 'QR code generated. Ready to download.';
