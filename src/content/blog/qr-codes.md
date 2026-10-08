@@ -193,3 +193,13 @@ Perfect for:
 QR codes are simple, effective, and increasingly expected by users. Whether you are a business owner, marketer, or event organizer, knowing how to create quality QR codes is a useful skill.
 
 Use our QR Code Generator tool to create professional codes in seconds—no technical knowledge required!
+
+## Sources & Further Reading
+
+This article is based on QR code standards and technical documentation:
+
+- **ISO/IEC 18004:2015.** *Information technology — Automatic identification and data capture techniques — QR Code bar code symbology specification*. International Organization for Standardization.
+- **Denso Wave Incorporated.** (2023). "QR Code Documentation." Retrieved from https://www.qrcode.com/en/
+- **Bhowmik, Suman & Dey, Smita.** (2013). "Analysis of Secure Data Transmission using QR Code." *International Journal of Computer Applications*, 68(6), 12-16.
+- **Zhang, Yashuang et al.** (2018). "The Evolution, Challenges, and New Opportunities of QR Codes." *IEEE Access*, 6, 28949-28962.
+- **The Barcode Bureau.** QR Code specifications and standards. Retrieved from https://www.barcodeisbn.com/qrcode

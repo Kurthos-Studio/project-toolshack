@@ -92,3 +92,12 @@ Use our JSON Formatter—it will highlight exactly where the error is!
 Formatted JSON saves you time debugging, reduces errors, and makes collaboration easier. Whether you are a developer, data analyst, or just working with web services, taking 10 seconds to format JSON can save you hours of troubleshooting.
 
 Next time you receive messy JSON, remember: formatting is not just about looks—it is about productivity and accuracy.
+
+## Sources & Further Reading
+
+This article is based on JSON standards and web development best practices:
+
+- **ECMA International.** (2017). *ECMAScript 2017 Language Specification (ECMA-262, 8th edition)*. Retrieved from https://www.ecma-international.org/ecma-262/
+- **Internet Engineering Task Force (IETF).** (2014). *The JavaScript Object Notation (JSON) Data Interchange Format* (RFC 7158). Retrieved from https://tools.ietf.org/html/rfc7158
+- **Mozilla Developer Network (MDN).** "JSON in JavaScript." Retrieved from https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON
+- **Crockford, Douglas.** (2006). "Introducing JSON." Retrieved from https://www.json.org/

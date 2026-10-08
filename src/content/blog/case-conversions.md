@@ -239,3 +239,13 @@ Using consistent, language-appropriate cases makes code:
 - **Professional** - Shows you understand language standards
 
 Next time you name a variable, choose the case that fits your language and context. Your teammates (and future you) will appreciate it!
+
+## Sources & Further Reading
+
+This article draws on official language style guides and programming best practices:
+
+- **Python Software Foundation.** (2001). *PEP 8 – Style Guide for Python Code*. Retrieved from https://www.python.org/dev/peps/pep-0008/
+- **Google.** (2023). *Python Style Guide*. Retrieved from https://google.github.io/styleguide/pyguide.html
+- **Airbnb.** (2023). *JavaScript Style Guide*. Retrieved from https://github.com/airbnb/javascript
+- **Microsoft.** (2020). *C# Coding Conventions*. Retrieved from https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions
+- **Camel Case Etymology.** Retrieved from https://en.wikipedia.org/wiki/Camel_case
