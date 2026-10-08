@@ -9,27 +9,12 @@ import { blogPosts } from '../data/blog';
 const featuredSlugs = ['qr-code-generator', 'regex-tester', 'password-generator', 'color-picker'];
 const featuredTools = tools.filter(t => featuredSlugs.includes(t.slug));
 
-// Remaining tools to randomly select from
+// Remaining tools (will be shuffled client-side)
 const remainingTools = tools.filter(t => !featuredSlugs.includes(t.slug));
 
-// Shuffle function
-function shuffleArray<T>(array: T[]): T[] {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-// Get 5 random tools from remaining tools
-const randomTools = shuffleArray(remainingTools).slice(0, 5);
-
-// Combine: featured tools + random tools
-const homepageTools = [...featuredTools, ...randomTools];
-
-// Get 3 random blog posts
-const randomPosts = shuffleArray(blogPosts).slice(0, 3);
+// Encode data for client-side processing
+const remainingToolsJson = JSON.stringify(remainingTools);
+const blogPostsJson = JSON.stringify(blogPosts);
 
 const schema = {
   '@context': 'https://schema.org',
@@ -59,15 +44,8 @@ const schema = {
       </div>
       <a href="/blog/" class="link-arrow">View all posts →</a>
     </div>
-    <div class="blog-preview-grid">
-      {randomPosts.map((post) => (
-        <a href={`/blog/${post.slug}/`} class="blog-preview-card">
-          <p class="eyebrow">{post.category}</p>
-          <h3>{post.title}</h3>
-          <p>{post.excerpt}</p>
-          <span class="blog-meta">{post.readingTime} min read</span>
-        </a>
-      ))}
+    <div class="blog-preview-grid" id="blogGrid" data-posts={blogPostsJson}>
+      <!-- Populated by client-side script -->
     </div>
   </section>
 
@@ -79,8 +57,9 @@ const schema = {
       </div>
       <a href="/tools/" class="link-arrow">View all tools →</a>
     </div>
-    <div class="tool-grid">
-      {homepageTools.map((tool) => <ToolCard {...tool} />)}
+    <div class="tool-grid" id="toolGrid">
+      {featuredTools.map((tool) => <ToolCard {...tool} />)}
+      <div id="randomTools" data-tools={remainingToolsJson}></div>
     </div>
   </section>
 
@@ -96,4 +75,48 @@ const schema = {
     </div>
     <AdSlot label="Ad" />
   </section>
+
+  <script is:inline>
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Randomize blog posts
+    const blogGrid = document.getElementById('blogGrid');
+    const postsData = blogGrid.getAttribute('data-posts');
+    if (postsData) {
+      const allPosts = JSON.parse(postsData);
+      const randomPosts = shuffleArray(allPosts).slice(0, 3);
+      
+      blogGrid.innerHTML = randomPosts.map(post => `
+        <a href="/blog/${post.slug}/" class="blog-preview-card">
+          <p class="eyebrow">${post.category}</p>
+          <h3>${post.title}</h3>
+          <p>${post.excerpt}</p>
+          <span class="blog-meta">${post.readingTime} min read</span>
+        </a>
+      `).join('');
+    }
+
+    // Randomize tools
+    const randomToolsDiv = document.getElementById('randomTools');
+    const toolsData = randomToolsDiv.getAttribute('data-tools');
+    if (toolsData) {
+      const allTools = JSON.parse(toolsData);
+      const randomTools = shuffleArray(allTools).slice(0, 5);
+      
+      randomToolsDiv.innerHTML = randomTools.map(tool => `
+        <a href="${tool.href}" class="tool-card">
+          <p class="tool-card-category">${tool.category}</p>
+          <h3>${tool.title}</h3>
+          <p>${tool.description}</p>
+        </a>
+      `).join('');
+    }
+  </script>
 </BaseLayout>
