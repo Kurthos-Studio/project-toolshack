@@ -8,9 +8,10 @@ import '../../styles/blog.css';
 const POSTS_PER_PAGE = 5;
 
 export async function getStaticPaths() {
-  const totalPages = Math.ceil(blogPosts.length / POSTS_PER_PAGE);
+  const postsPerPage = 5;
+  const totalPages = Math.ceil(blogPosts.length / postsPerPage);
   return Array.from({ length: totalPages }, (_, i) => ({
-    params: { page: i === 0 ? undefined : String(i + 1) },
+    params: { page: String(i + 1) },
   }));
 }
 
@@ -89,7 +90,7 @@ const schema = {
     totalPages > 1 && (
       <nav class="pagination" aria-label="Blog pagination">
         {currentPage > 1 && (
-          <a href={currentPage === 2 ? '/blog/' : `/blog/${currentPage - 1}/`} class="pagination-link pagination-prev">
+          <a href={currentPage === 2 ? '/blog/1/' : `/blog/${currentPage - 1}/`} class="pagination-link pagination-prev">
             ← Previous
           </a>
         )}
@@ -97,7 +98,7 @@ const schema = {
         <div class="pagination-numbers">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <a
-              href={page === 1 ? '/blog/' : `/blog/${page}/`}
+              href={`/blog/${page}/`}
               class={`pagination-number ${page === currentPage ? 'active' : ''}`}
               aria-current={page === currentPage ? 'page' : undefined}
             >
