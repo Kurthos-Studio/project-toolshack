@@ -94,7 +94,6 @@ const schema = {
       
       blogGrid.innerHTML = randomPosts.map(post => `
         <a href="/blog/${post.slug}/" class="blog-preview-card">
-          <p class="eyebrow">${post.category}</p>
           <h3>${post.title}</h3>
           <p>${post.excerpt}</p>
           <span class="blog-meta">${post.readingTime} min read</span>

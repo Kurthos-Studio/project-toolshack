@@ -7,9 +7,21 @@ import '../../styles/blog.css';
 
 const POSTS_PER_PAGE = 5;
 
-// Get page number from URL parameters (default to 1)
-const currentPage = Math.max(1, parseInt(Astro.url.searchParams.get('page') || '1'));
+export async function getStaticPaths() {
+  const totalPages = Math.ceil(blogPosts.length / POSTS_PER_PAGE);
+  return Array.from({ length: totalPages }, (_, i) => ({
+    params: { page: i === 0 ? undefined : String(i + 1) },
+  }));
+}
+
+// Get page number from route parameter or default to 1
+const currentPage = Math.max(1, parseInt(Astro.params.page || '1'));
 const totalPages = Math.ceil(blogPosts.length / POSTS_PER_PAGE);
+
+// Validate page number
+if (currentPage > totalPages) {
+  return Astro.redirect('/blog/');
+}
 
 // Sort posts by date (newest first)
 const sortedPosts = blogPosts.sort(
@@ -77,7 +89,7 @@ const schema = {
     totalPages > 1 && (
       <nav class="pagination" aria-label="Blog pagination">
         {currentPage > 1 && (
-          <a href={`/blog/?page=${currentPage - 1}`} class="pagination-link pagination-prev">
+          <a href={currentPage === 2 ? '/blog/' : `/blog/${currentPage - 1}/`} class="pagination-link pagination-prev">
             ← Previous
           </a>
         )}
@@ -85,7 +97,7 @@ const schema = {
         <div class="pagination-numbers">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <a
-              href={`/blog/?page=${page}`}
+              href={page === 1 ? '/blog/' : `/blog/${page}/`}
               class={`pagination-number ${page === currentPage ? 'active' : ''}`}
               aria-current={page === currentPage ? 'page' : undefined}
             >
@@ -95,7 +107,7 @@ const schema = {
         </div>
 
         {currentPage < totalPages && (
-          <a href={`/blog/?page=${currentPage + 1}`} class="pagination-link pagination-next">
+          <a href={`/blog/${currentPage + 1}/`} class="pagination-link pagination-next">
             Next →
           </a>
         )}
