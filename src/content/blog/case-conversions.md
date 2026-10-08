@@ -1,4 +1,3 @@
-# Understanding Case Conversions: camelCase, snake_case, kebab-case, and Beyond
 
 If you have ever looked at code, you have probably noticed that variable names follow different patterns. Why does one piece of code use `firstName` and another use `first_name`? There is actually a good reason! Let us explore the world of text case conventions.
 

@@ -1,4 +1,3 @@
-# Word Unscrambling: The Science Behind Finding Words in Letters
 
 Have you ever played Scrabble, Wordle, or word puzzle games and found yourself staring at a random collection of letters? The challenge of transforming jumbled letters into actual words is both frustrating and satisfying. Let's explore the science, strategy, and techniques behind word unscrambling.
 

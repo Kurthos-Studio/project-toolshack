@@ -1,4 +1,3 @@
-# The Hidden Language: Understanding Base64 Encoding
 
 Every day, billions of emails travel across the internet containing images, attachments, and formatted text. Your browser displays web pages with embedded graphics. APIs transmit data in JSON format. Behind all of this is an encoding scheme most people have never heard of: Base64. Yet without it, the modern internet as we know it wouldn't function.
 

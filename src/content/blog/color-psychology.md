@@ -1,4 +1,3 @@
-# Color Psychology for Designers: Using Your Color Picker Strategically
 
 Colors are not just pretty—they are powerful tools that influence how users feel and act. In this guide, we will explore color psychology and show you how to use it effectively in your designs.
 

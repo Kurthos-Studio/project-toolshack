@@ -1,4 +1,3 @@
-# URLs Explained: Encoding, Special Characters & Why They Matter
 
 URLs are everywhere, yet most people never think about what's actually happening when they click a link or use a search engine. Behind every web address is a carefully structured encoding system that determines what characters are safe, which must be escaped, and how information travels across the internet.
 

@@ -1,4 +1,3 @@
-# UUIDs and GUIDs Explained: Creating Unique Identifiers at Scale
 
 Imagine you're building a global application used by millions of people across the world. Your database needs to assign a unique identifier to every user, order, and transaction. But here's the challenge: you can't coordinate with every server in every country to ensure IDs don't collide. You need a way to generate unique identifiers independently, anywhere, without any central authority.
 

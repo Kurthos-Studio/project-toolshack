@@ -1,4 +1,3 @@
-# Cryptographic Hashing Explained: How to Secure Data with MD5, SHA-1, and SHA-256
 
 Every time you create an account on a website, your password doesn't get stored as plain text. Instead, it's converted into a hash—a seemingly random string of characters that's mathematically impossible to reverse. This one-way encryption protects your password even if hackers breach the server.
 

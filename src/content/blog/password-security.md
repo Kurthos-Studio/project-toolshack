@@ -1,4 +1,3 @@
-# Password Generator Best Practices: Creating Secure Passwords That Actually Work
 
 In 2024, the average person has 100+ online accounts. Each needs a strong password. But what makes a password actually secure? Let us break down password security and show you how to create passwords that really work.
 

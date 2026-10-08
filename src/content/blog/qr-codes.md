@@ -1,4 +1,3 @@
-# QR Codes Explained: From History to Modern Uses (and How to Create Them)
 
 You see them everywhere—restaurant menus, product packaging, advertisements. QR codes have become ubiquitous. But what exactly are they, and why are they so useful? Let us explore this underutilized technology.
 

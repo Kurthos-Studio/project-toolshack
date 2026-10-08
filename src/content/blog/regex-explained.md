@@ -1,4 +1,3 @@
-# Regular Expressions Explained: From Basics to Powerful Pattern Matching
 
 Regular expressions—often shortened to "regex"—are one of the most powerful yet intimidating tools in a programmer's toolkit. They look like gibberish at first glance: `/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/`. Yet this seemingly random collection of symbols can validate an email address in a single line of code.
 

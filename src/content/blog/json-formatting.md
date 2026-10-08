@@ -1,4 +1,3 @@
-# How to Format JSON: A Step-by-Step Guide for Beginners
 
 JSON (JavaScript Object Notation) is one of the most common data formats used in modern web development. Whether you're working with APIs, configuration files, or data storage, you'll encounter JSON regularly. But raw JSON can be hard to read. Let's explore why formatting matters and how to do it effectively.
 
