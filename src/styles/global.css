@@ -809,8 +809,14 @@ textarea {
 }
 
 .ad-slot {
-  margin-top: 1.25rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
   background: linear-gradient(180deg, rgba(16, 35, 49, 0.03), rgba(255, 255, 255, 0.84));
+}
+
+.tool-shell .ad-slot {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 @media (max-width: 960px) {
