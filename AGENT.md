@@ -1044,11 +1044,15 @@ quantityInput?.addEventListener('input', (e) => {
    - **Purple (#dda0dd)** - Captured groups
    - **Red (#ff6b6b)** - Error messages
 
-**Syntax Reference Panel:**
-- Display 2-column grid of syntax reference sections
-- Sections: Character Classes, Quantifiers, Anchors, Groups & Flags
-- Use inline styles for consistent display
-- Include common regex elements: `.`, `\d`, `\w`, `\s`, `[abc]`, `*`, `+`, `?`, `^`, `$`, `\b`, `|`, `()`
+**Syntax Reference Panel - METHOD-SPECIFIC:**
+- Each method has its own reference section (hidden/shown via JavaScript)
+- JavaScript reference: `(?<name>...)` named groups, flags `g,i,m,s,u,y`
+- Python reference: `(?P<name>...)` named groups, `(?P=name)` backrefs, flags `re.I`, `re.M`, `re.S`, `re.X`
+- PCRE reference: `(?<=...)` lookbehind, `(?>...)` atomic groups, `\h`/`\v` whitespace
+- PHP reference: Perl-compatible syntax, `\p{L}` unicode, flags `i,m,s,x,u,A,D,U`
+- Common across all: Character Classes, Quantifiers, Anchors
+- Toggle between methods using: `showReference(method)` function
+- Each reference wrapped in `<div data-ref="method">` with display grid toggle
 
 **Event Handlers:**
 - Test button: Parse regex, match against text, display colored results
