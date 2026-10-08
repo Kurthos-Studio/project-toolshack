@@ -47,7 +47,7 @@ const schema = {
             Format
             <select data-format>
               <option value="square" selected>Square Dots</option>
-              <option value="rounded">Rounded Dots</option>
+              <option value="dots">Circular Dots</option>
             </select>
             <span class="field-hint">QR code style</span>
           </label>
@@ -68,9 +68,9 @@ const schema = {
         <p class="field-hint" data-status>Ready to generate QR code.</p>
       </section>
 
-      <aside class="result-panel qr-preview">
+      <aside class="result-panel qr-preview" data-qr-container>
         <p class="eyebrow">Preview</p>
-        <canvas data-qr-canvas style="max-width: 100%; border: 1px solid var(--color-border); border-radius: 8px; display: block;"></canvas>
+        <div id="qr-canvas" style="display: flex; justify-content: center; align-items: center; min-height: 300px; border: 1px solid var(--color-border); border-radius: 8px;"></div>
       </aside>
     </div>
 
@@ -78,173 +78,116 @@ const schema = {
   </section>
 
   <script is:inline>
-    const root = document.querySelector('[data-qr-tool]');
+    // Load QRCodeStyling from CDN
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/qr-code-styling@1.6.0/lib/qr-code-styling.js';
+    script.onload = initQRTool;
+    document.head.appendChild(script);
 
-    if (root) {
-      const content = root.querySelector('[data-content]');
-      const size = root.querySelector('[data-size]');
-      const sizeValue = root.querySelector('[data-size-value]');
-      const format = root.querySelector('[data-format]');
-      const bgUpload = root.querySelector('[data-bg-upload]');
-      const generate = root.querySelector('[data-generate]');
-      const clearBg = root.querySelector('[data-clear-bg]');
-      const download = root.querySelector('[data-download]');
-      const status = root.querySelector('[data-status]');
-      const canvas = document.querySelector('[data-qr-canvas]');
+    function initQRTool() {
+      const root = document.querySelector('[data-qr-tool]');
 
-      let backgroundImage = null;
+      if (root) {
+        const content = root.querySelector('[data-content]');
+        const size = root.querySelector('[data-size]');
+        const sizeValue = root.querySelector('[data-size-value]');
+        const format = root.querySelector('[data-format]');
+        const bgUpload = root.querySelector('[data-bg-upload]');
+        const generate = root.querySelector('[data-generate]');
+        const clearBg = root.querySelector('[data-clear-bg]');
+        const download = root.querySelector('[data-download]');
+        const status = root.querySelector('[data-status]');
+        const qrContainer = document.querySelector('#qr-canvas');
 
-      function renderSquareDots(ctx, qrPixels, moduleSize, px) {
-        ctx.fillStyle = '#000';
-        for (let row = 0; row < qrPixels.length; row++) {
-          for (let col = 0; col < qrPixels[row].length; col++) {
-            if (qrPixels[row][col]) {
-              ctx.fillRect(col * moduleSize, row * moduleSize, moduleSize, moduleSize);
-            }
-          }
-        }
-      }
+        let qrCode = null;
+        let backgroundImageUrl = null;
 
-      function isPositioningPattern(row, col, size) {
-        // Top-left
-        if (row < 7 && col < 7) return true;
-        // Top-right
-        if (row < 7 && col >= size - 7) return true;
-        // Bottom-left
-        if (row >= size - 7 && col < 7) return true;
-        return false;
-      }
-
-      function renderRoundedDots(ctx, qrPixels, moduleSize, px) {
-        const size = qrPixels.length;
-        // Smaller radius creates visible spacing, making dots clearly distinct from squares
-        const radius = moduleSize * 0.38;
-        
-        ctx.fillStyle = '#000';
-        
-        for (let row = 0; row < size; row++) {
-          for (let col = 0; col < size; col++) {
-            if (qrPixels[row][col]) {
-              const x = col * moduleSize + moduleSize / 2;
-              const y = row * moduleSize + moduleSize / 2;
-              
-              // Draw circles with visible spacing
-              ctx.beginPath();
-              ctx.arc(x, y, radius, 0, Math.PI * 2);
-              ctx.fill();
-            }
-          }
-        }
-      }
-
-      async function generateQR() {
-        const text = (content.value || '').trim() || 'https://tools.kurthos.app';
-        const px = parseInt(size.value) || 256;
-        const selectedFormat = format.value || 'square';
-        
-        try {
-          canvas.width = px;
-          canvas.height = px;
-          const ctx = canvas.getContext('2d');
+        function generateQR() {
+          const text = (content.value || '').trim() || 'https://tools.kurthos.app';
+          const px = parseInt(size.value) || 256;
+          const selectedFormat = format.value || 'square';
           
-          // Only draw white background if no background image
-          if (!backgroundImage) {
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(0, 0, px, px);
-          } else {
-            // Draw background image at full opacity to preserve colors
-            ctx.drawImage(backgroundImage, 0, 0, px, px);
-          }
-          
-          const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=' + encodeURIComponent(text);
-          const qrImg = new Image();
-          qrImg.crossOrigin = 'anonymous';
-          
-          qrImg.onload = () => {
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = qrImg.width;
-            tempCanvas.height = qrImg.height;
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCtx.drawImage(qrImg, 0, 0);
+          try {
+            const dotType = selectedFormat === 'dots' ? 'dots' : 'square';
             
-            const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const data = imgData.data;
-            
-            const qrPixels = [];
-            for (let i = 0; i < tempCanvas.height; i++) {
-              const row = [];
-              for (let j = 0; j < tempCanvas.width; j++) {
-                const idx = (i * tempCanvas.width + j) * 4;
-                const brightness = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
-                row.push(brightness < 128);
-              }
-              qrPixels.push(row);
-            }
-            
-            const moduleSize = Math.max(1, Math.floor(px / qrPixels.length));
-            
-            if (selectedFormat === 'rounded') {
-              renderRoundedDots(ctx, qrPixels, moduleSize, px);
+            const options = {
+              width: px,
+              height: px,
+              data: text,
+              dotsOptions: {
+                color: '#000',
+                type: dotType,
+              },
+              backgroundOptions: {
+                color: '#fff',
+              },
+              ...(backgroundImageUrl && {
+                image: backgroundImageUrl,
+                imageOptions: {
+                  crossOrigin: 'anonymous',
+                  margin: 10,
+                }
+              }),
+            };
+
+            if (qrCode) {
+              qrCode.update(options);
             } else {
-              renderSquareDots(ctx, qrPixels, moduleSize, px);
+              qrCode = new QRCodeStyling(options);
             }
-            
-            const downloadUrl = canvas.toDataURL('image/png');
-            download.href = downloadUrl;
-            status.textContent = 'QR code generated. Ready to download.';
-          };
-          
-          qrImg.onerror = () => {
-            status.textContent = 'Error generating QR code. Please try again.';
-          };
-          
-          qrImg.src = qrApiUrl;
-        } catch (e) {
-          status.textContent = 'Error: ' + (e instanceof Error ? e.message : 'Unknown error');
-        }
-      }
 
-      bgUpload.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const img = new Image();
-          img.onload = () => {
-            backgroundImage = img;
+            qrContainer.innerHTML = '';
+            qrCode.append(qrContainer);
+
+            // Setup download
+            download.onclick = () => {
+              qrCode.download({ name: 'qr-code', extension: 'png' });
+            };
+
+            status.textContent = 'QR code generated. Ready to download.';
+          } catch (e) {
+            status.textContent = 'Error: ' + (e instanceof Error ? e.message : 'Unknown error');
+          }
+        }
+
+        bgUpload.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            backgroundImageUrl = event.target.result;
             status.textContent = 'Background image loaded. Regenerating...';
             generateQR();
           };
-          img.onerror = () => {
+          reader.onerror = () => {
             status.textContent = 'Error loading image. Please try another file.';
-            backgroundImage = null;
+            backgroundImageUrl = null;
           };
-          img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-      });
+          reader.readAsDataURL(file);
+        });
 
-      clearBg.addEventListener('click', () => {
-        backgroundImage = null;
-        bgUpload.value = '';
-        status.textContent = 'Background cleared.';
+        clearBg.addEventListener('click', () => {
+          backgroundImageUrl = null;
+          bgUpload.value = '';
+          status.textContent = 'Background cleared.';
+          generateQR();
+        });
+
+        generate.addEventListener('click', generateQR);
+        content.addEventListener('input', () => {
+          status.textContent = 'Content changed. Generate to update.';
+        });
+        size.addEventListener('input', () => {
+          sizeValue.textContent = size.value;
+          status.textContent = 'Size changed. Generate to update.';
+        });
+        format.addEventListener('change', () => {
+          status.textContent = 'Format changed. Generate to update.';
+        });
+
         generateQR();
-      });
-
-      generate.addEventListener('click', generateQR);
-      content.addEventListener('input', () => {
-        status.textContent = 'Content changed. Generate to update.';
-      });
-      size.addEventListener('input', () => {
-        sizeValue.textContent = size.value;
-        status.textContent = 'Size changed. Generate to update.';
-      });
-      format.addEventListener('change', () => {
-        status.textContent = 'Format changed. Generate to update.';
-      });
-
-      generateQR();
+      }
     }
   </script>
 </BaseLayout>
