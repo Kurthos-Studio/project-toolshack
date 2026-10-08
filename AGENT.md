@@ -6,8 +6,9 @@ This file documents all standards and workflows for Project Toolshack. Read this
 
 **Name:** Project Toolshack  
 **Purpose:** Collection of online utility tools with educational blog content  
-**AdSense Goal:** Approval through comprehensive blog system (45,000+ words, 40+ citations, 100% factually accurate)  
-**Status:** Blog system complete with 7 posts covering all tools
+**AdSense Goal:** Approval through comprehensive blog system and consistent design  
+**Status:** 13 tools, 13 blog posts, 130,000+ words of content, 100+ citations  
+**Latest Addition:** Regex Tester, UUID Generator, Hash Generator (Oct 8, 2025)
 
 ## Mandatory Standards for ALL Blog Posts
 
@@ -928,6 +929,83 @@ Before committing ANY styling changes:
 ☐ Does it look professional and polished?
 ☐ Will it pass AdSense approval (consistent design)?
 ```
+
+---
+
+## 📚 Current Tools & Blog Posts Reference
+
+### 13 Tools Currently Available
+
+**Security & Developer Tools:**
+1. **Password Generator** - Generate random passwords or word chains
+2. **Regex Tester** - Test and debug regular expressions ⭐ NEW
+3. **Hash Generator** - Generate cryptographic hashes (SHA-256, SHA-1, MD5) ⭐ NEW
+4. **UUID/GUID Generator** - Generate unique identifiers in multiple formats ⭐ NEW
+
+**Text & Encoding Tools:**
+5. **Case Converter** - Convert between camelCase, snake_case, kebab-case, etc.
+6. **URL Encoder/Decoder** - Encode and decode URLs safely
+7. **Base64 Encoder/Decoder** - Encode/decode Base64 strings
+
+**Developer Tools:**
+8. **JSON Formatter** - Format, minify, validate JSON
+9. **Unix Timestamp Converter** - Convert timestamps to dates and vice versa
+
+**Utility & Design Tools:**
+10. **Color Picker** - Pick colors and copy HEX, RGB, HSL values
+11. **QR Code Generator** - Generate QR codes for URLs or text
+12. **Unit Converter** - Convert between metric, imperial, and other units
+13. **Word Unscrambler** - Find buildable words from letters
+
+### 13 Blog Posts Currently Available
+
+**Security Category (3 posts):**
+- Password Generator Best Practices
+- Cryptographic Hashing Explained (Hash Generator) ⭐ NEW
+- Word Unscrambling: The Science Behind Pattern Recognition
+
+**Development Category (7 posts):**
+- How to Format JSON
+- Understanding Case Conversions
+- URLs Explained: Encoding & Special Characters
+- The Hidden Language: Base64 Encoding
+- Time in Computing: Unix Timestamps & Time Zones
+- Regular Expressions Explained ⭐ NEW
+- UUIDs and GUIDs Explained ⭐ NEW
+
+**Design Category (1 post):**
+- Color Psychology for Designers
+
+**Science & Math Category (1 post):**
+- Unit Conversion Explained
+
+**Utility & Games Category (2 posts):**
+- QR Codes Explained: Modern Uses
+- None (reserved for future utility tool)
+
+### Recommended Tools to Add Next
+
+**High Priority (Strong Blog Content + High Demand):**
+1. **CSV to JSON Converter** - Data transformation tool
+   - Blog: "Data Format Conversion Guide"
+   - Category: Developer
+   - Reading time: 8 mins
+
+2. **Markdown to HTML Converter** - Content creation tool
+   - Blog: "Markdown and HTML: Technical Writing Guide"
+   - Category: Development
+   - Reading time: 8 mins
+
+3. **JSON to YAML Converter** - Configuration tool
+   - Blog: "YAML vs JSON: Configuration Formats Explained"
+   - Category: Development
+   - Reading time: 7 mins
+
+**Medium Priority (Good Utility + Educational Value):**
+4. **Hex/Binary/Decimal Converter** - Number systems
+5. **HTML to Markdown Converter** - Content migration
+6. **Minify/Beautify CSS** - Performance optimization
+7. **Slug Generator** - SEO and URL optimization
 
 ---
 
