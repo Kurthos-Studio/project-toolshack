@@ -121,6 +121,16 @@ const schema = {
               backgroundOptions: {
                 color: '#fff',
               },
+              ...(selectedFormat === 'dots' && {
+                cornersSquareOptions: {
+                  color: '#000',
+                  type: 'square',
+                },
+                cornersDotOptions: {
+                  color: '#000',
+                  type: 'dot',
+                }
+              }),
               ...(backgroundImageUrl && {
                 image: backgroundImageUrl,
                 imageOptions: {
