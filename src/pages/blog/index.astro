@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import { blogPosts } from '../../data/blog';
+import { siteConfig } from '../../data/site';
+import '../../styles/blog.css';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Toolshack Blog',
+  description: 'Learn how to use online tools effectively and best practices for productivity.',
+  url: `${siteConfig.url}/blog/`,
+};
+---
+
+<BaseLayout
+  title={`Blog | ${siteConfig.name}`}
+  description="Learn how to use online tools effectively with our comprehensive guides and tutorials."
+  schema={schema}
+>
+  <section class="hero">
+    <p class="eyebrow">Learning hub</p>
+    <h1>Guides & Tutorials</h1>
+    <p class="lead">Master productivity tools with practical guides, best practices, and expert tips.</p>
+  </section>
+
+  <section class="blog-container">
+    <div class="blog-grid">
+      {
+        blogPosts
+          .sort((a, b) => new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime())
+          .map((post) => (
+            <article class="blog-card">
+              <div class="blog-card-header">
+                <span class="blog-category">{post.category}</span>
+                <time class="blog-date" datetime={post.publishedDate}>
+                  {new Date(post.publishedDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </time>
+              </div>
+              <h2 class="blog-title">
+                <a href={`/blog/${post.slug}/`}>{post.title}</a>
+              </h2>
+              <p class="blog-excerpt">{post.excerpt}</p>
+              <div class="blog-card-footer">
+                <span class="blog-reading-time">{post.readingTime} min read</span>
+                <a href={`/blog/${post.slug}/`} class="blog-link">Read More →</a>
+              </div>
+            </article>
+          ))
+      }
+    </div>
+
+    <aside class="blog-sidebar">
+      <AdSlot label="Blog Ad" />
+    </aside>
+  </section>
+</BaseLayout>

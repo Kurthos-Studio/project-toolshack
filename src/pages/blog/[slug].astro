@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import { blogPosts } from '../../data/blog';
+import { siteConfig, tools } from '../../data/site';
+import '../../styles/blog-post.css';
+import * as jsonPost from '../../content/blog/json-formatting.md';
+import * as passwordPost from '../../content/blog/password-security.md';
+import * as casePost from '../../content/blog/case-conversions.md';
+import * as colorPost from '../../content/blog/color-psychology.md';
+import * as qrPost from '../../content/blog/qr-codes.md';
+
+const postModules: Record<string, any> = {
+  'json-formatting.md': jsonPost,
+  'password-security.md': passwordPost,
+  'case-conversions.md': casePost,
+  'color-psychology.md': colorPost,
+  'qr-codes.md': qrPost,
+};
+
+export async function getStaticPaths() {
+  return blogPosts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: (typeof blogPosts)[0];
+}
+
+const { post } = Astro.props;
+const postModule = postModules[post.contentFile];
+const Content = postModule?.default;
+
+const relatedTools = tools.filter((tool) => post.relatedTools.includes(tool.slug));
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.title,
+  description: post.excerpt,
+  image: `${siteConfig.url}/og-image.svg`,
+  datePublished: post.publishedDate,
+  author: {
+    '@type': 'Organization',
+    name: post.author,
+  },
+};
+---
+
+<BaseLayout title={`${post.title} | ${siteConfig.name}`} description={post.excerpt} schema={schema}>
+  <article class="blog-post-container">
+    <div class="blog-post-header">
+      <div class="blog-post-meta">
+        <span class="blog-category">{post.category}</span>
+        <time datetime={post.publishedDate}>
+          {new Date(post.publishedDate).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+          })}
+        </time>
+        <span class="blog-reading-time">{post.readingTime} min read</span>
+      </div>
+      <h1>{post.title}</h1>
+    </div>
+
+    <AdSlot label="Above Content" />
+
+    <div class="blog-post-content">
+      {Content && <Content />}
+    </div>
+
+    {relatedTools.length > 0 && <RelatedTools tools={relatedTools} />}
+
+    <AdSlot label="Below Content" />
+
+    <div class="blog-navigation">
+      <a href="/blog/" class="blog-back-link">← Back to all posts</a>
+    </div>
+  </article>
+</BaseLayout>
+

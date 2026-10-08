@@ -7,7 +7,10 @@ export const siteConfig = {
   ogImage: '/og-image.svg',
 };
 
-export const mainNavigation = [{ label: 'Tools', href: '/tools/' }];
+export const mainNavigation = [
+  { label: 'Tools', href: '/tools/' },
+  { label: 'Blog', href: '/blog/' },
+];
 
 export const tools = [
   {
