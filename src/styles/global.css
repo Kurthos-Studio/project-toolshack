@@ -416,7 +416,10 @@ button:disabled,
 }
 
 .tool-card .eyebrow {
+  display: block;
   margin-bottom: 0.75rem;
+  margin: 0 0 0.75rem;
+  padding: 0.45rem 0.75rem;
 }
 
 .tool-card h3 {
@@ -929,7 +932,9 @@ textarea {
 }
 
 .blog-preview-card .eyebrow {
-  margin-bottom: 0.75rem;
+  display: block;
+  margin: 0 0 0.75rem;
+  padding: 0.45rem 0.75rem;
 }
 
 .blog-preview-card h3 {
