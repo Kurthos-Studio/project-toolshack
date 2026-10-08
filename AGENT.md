@@ -1069,6 +1069,68 @@ quantityInput?.addEventListener('input', (e) => {
 
 ---
 
+### QR Code Generator (`/tools/qr-code-generator.astro`)
+
+**Key Features Implemented:**
+- Format selector: Square Dots (default) and Rounded Curves
+- QR Size slider: 160-512px with real-time value display
+- Background image upload: Optional overlay for custom branding
+- Contrast overlay: Maintains QR code scannability with background images
+- Download button: Exports QR code as PNG file
+
+**Technical Approach:**
+- Uses QRServer API for base QR generation (`https://api.qrserver.com/v1/create-qr-code/`)
+- Canvas-based rendering for format switching and background compositing
+- Two rendering modes:
+  - `generateSquareDots()`: Standard QR appearance (black squares)
+  - `generateRoundedCurves()`: Aesthetic variant with curved corner dots
+- Background image handling:
+  - Loaded via FileReader API
+  - Drawn to canvas before QR overlay
+  - Contrast overlay applied automatically: bright areas → white (200α), dark areas → black (220α)
+
+**HTML Structure:**
+```html
+<label>Format
+  <select data-format>
+    <option value="square" selected>Square Dots</option>
+    <option value="rounded">Rounded Curves</option>
+  </select>
+</label>
+<label>Background Image (Optional)
+  <input type="file" data-bg-upload accept="image/*" />
+</label>
+<button data-generate>Generate QR</button>
+<button data-clear-bg>Clear Background</button>
+<a data-download href="#" download="qr-code.png">Download PNG</a>
+<canvas data-qr-canvas></canvas>
+```
+
+**Event Handlers:**
+- File upload: Loads image, renders to canvas with contrast overlay, regenerates QR
+- Clear Background: Resets `backgroundImage` to null, regenerates QR
+- Generate button: Fetches QR from API, renders in selected format, updates download link
+- Size/Format/Content changes: Update status message, require explicit Generate click to apply
+
+**Implementation Details:**
+- All binary data transfers use canvas: `canvas.toDataURL('image/png')` for download
+- Error handling: Catch file load errors and API failures, display in status
+- Format module size: `Math.floor(px / 29)` provides balanced proportions (29x29 QR matrix)
+- API URL: `https://api.qrserver.com/v1/create-qr-code/?size=` + px + 'x' + px + '&data=' + encodeURIComponent(text)
+- Contrast detection: Uses brightness formula `(r*299 + g*587 + b*114) / 1000`
+
+**Testing Notes:**
+- ✅ Square Dots format displays correctly
+- ✅ Rounded Curves format displays correctly
+- ✅ Format selector changes generate new QR code
+- ✅ Size slider updates QR code dimensions
+- ✅ Content textarea triggers status message on input
+- ✅ Download link contains valid PNG base64 data
+- ✅ Clear Background button resets to white background
+- File upload functionality tested via Playwright (manual file browser testing recommended)
+
+---
+
 **Design Philosophy Summary:**
 
 > "One design standard, applied consistently everywhere. Blog cards, tool cards, sections, buttons, labels - all follow the same rules. This creates a professional appearance that demonstrates:
