@@ -57,9 +57,8 @@ const schema = {
       </div>
       <a href="/tools/" class="link-arrow">View all tools →</a>
     </div>
-    <div class="tool-grid" id="toolGrid">
+    <div class="tool-grid" id="toolGrid" data-tools={remainingToolsJson}>
       {featuredTools.map((tool) => <ToolCard {...tool} />)}
-      <div id="randomTools" data-tools={remainingToolsJson}></div>
     </div>
   </section>
 
@@ -104,19 +103,21 @@ const schema = {
     }
 
     // Randomize tools
-    const randomToolsDiv = document.getElementById('randomTools');
-    const toolsData = randomToolsDiv.getAttribute('data-tools');
+    const toolGrid = document.getElementById('toolGrid');
+    const toolsData = toolGrid.getAttribute('data-tools');
     if (toolsData) {
       const allTools = JSON.parse(toolsData);
       const randomTools = shuffleArray(allTools).slice(0, 5);
       
-      randomToolsDiv.innerHTML = randomTools.map(tool => `
+      const toolsHtml = randomTools.map(tool => `
         <a href="${tool.href}" class="tool-card">
-          <p class="tool-card-category">${tool.category}</p>
+          <p class="eyebrow">${tool.category}</p>
           <h3>${tool.title}</h3>
           <p>${tool.description}</p>
         </a>
       `).join('');
+      
+      toolGrid.insertAdjacentHTML('beforeend', toolsHtml);
     }
   </script>
 </BaseLayout>
