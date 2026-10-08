@@ -28,7 +28,8 @@ const randomTools = shuffleArray(remainingTools).slice(0, 5);
 // Combine: featured tools + random tools
 const homepageTools = [...featuredTools, ...randomTools];
 
-const latestPosts = blogPosts.slice(0, 3);
+// Get 3 random blog posts
+const randomPosts = shuffleArray(blogPosts).slice(0, 3);
 
 const schema = {
   '@context': 'https://schema.org',
@@ -59,7 +60,7 @@ const schema = {
       <a href="/blog/" class="link-arrow">View all posts →</a>
     </div>
     <div class="blog-preview-grid">
-      {latestPosts.map((post) => (
+      {randomPosts.map((post) => (
         <a href={`/blog/${post.slug}/`} class="blog-preview-card">
           <p class="eyebrow">{post.category}</p>
           <h3>{post.title}</h3>
