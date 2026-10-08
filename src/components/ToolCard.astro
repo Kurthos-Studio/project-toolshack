@@ -9,9 +9,8 @@ type Props = {
 const { title, href, description, category } = Astro.props as Props;
 ---
 
-<article class="tool-card">
+<a href={href} class="tool-card">
   <p class="eyebrow">{category}</p>
-  <h3><a href={href}>{title}</a></h3>
+  <h3>{title}</h3>
   <p>{description}</p>
-  <a class="tool-card-link" href={href}>Open tool</a>
-</article>
+</a>

@@ -493,3 +493,107 @@ npm run build | grep "page(s) built"
 ---
 **Last Updated:** Oct 8, 2026  
 **Remember:** Consistency = Professionalism = Trust = AdSense Approval ✨
+
+## 🎨 Main Page Design Consistency (CRITICAL)
+
+The home page `/src/pages/index.astro` must maintain strict design consistency:
+
+### Hero Section (Top)
+```
+✅ CORRECT:
+- "Overview" eyebrow
+- Main headline
+- "Browse tools" CTA button
+- Stat cards (only tool count + blog post count)
+- Remove: "Clean" stat card or any non-numeric cards
+
+❌ WRONG:
+- Including descriptive stats like "Clean" or "Fast"
+- Only include metrics (tool count, blog count, etc.)
+```
+
+### Blog Section (Middle-Upper)
+```
+✅ CORRECT STRUCTURE:
+<section class="section">
+  <div class="section-header">
+    <div>
+      <h2>Latest from the blog</h2>
+      <p>Descriptive subtitle</p>
+    </div>
+    <a href="/blog/" class="link-arrow">View all posts →</a>
+  </div>
+  <div class="blog-preview-grid">
+    {latestPosts.map((post) => (
+      <a href={...} class="blog-preview-card">
+        <p class="eyebrow">{post.category}</p>
+        <h3>{post.title}</h3>
+        <p>{post.excerpt}</p>
+        <span class="blog-meta">{post.readingTime} min read</span>
+      </a>
+    ))}
+  </div>
+</section>
+```
+
+### Tools Section (Middle-Lower)
+```
+✅ CORRECT STRUCTURE (MUST MATCH BLOG SECTION):
+<section class="section">
+  <div class="section-header">
+    <div>
+      <h2>Featured tools</h2>
+      <p>Quick utility tools for everyday tasks</p>
+    </div>
+    <a href="/tools/" class="link-arrow">View all tools →</a>
+  </div>
+  <div class="tool-grid">
+    {sortedTools.map((tool) => <ToolCard {...tool} />)}
+  </div>
+</section>
+
+With ToolCard component as:
+<a href={href} class="tool-card">
+  <p class="eyebrow">{category}</p>
+  <h3>{title}</h3>
+  <p>{description}</p>
+</a>
+
+❌ WRONG:
+- Tool card is <article> instead of <a> link
+- Tool card has "Open tool" button link
+- Tool card doesn't have section-header with "View all tools" link
+- Section structure doesn't match blog section
+- Stat bubbles on hero with non-numeric values
+```
+
+### CSS Consistency for Cards
+```
+Blog Preview Card (.blog-preview-card):
+- display: flex; flex-direction: column;
+- padding: 1.5rem;
+- border: 1px solid #e1e4e8;
+- border-radius: 8px;
+- text-decoration: none; color: inherit;
+- Hover: border color change + box shadow + translateY(-2px)
+- Eyebrow: margin-bottom: 0.75rem;
+- h3: margin: 0.5rem 0 1rem 0; font-size: 1.25rem;
+- p: margin: 0; color: #666; font-size: 0.95rem;
+
+Tool Card (.tool-card):
+- MUST MATCH blog-preview-card exactly (plus decorative ::after element)
+- Same display, padding, border, border-radius
+- Same hover effects
+- Same h3 and p styling
+- .tool-card .eyebrow: margin-bottom: 0.75rem; (matches blog)
+```
+
+### When Modifying Home Page:
+1. Keep blog and tool sections structurally identical
+2. Use same section-header layout for both
+3. Both should have "View all X" links
+4. Both should use grid layout (blog-preview-grid, tool-grid)
+5. Both cards should be clickable links (no nested buttons)
+6. Both use eyebrow class for categories
+7. NO "Open tool" or similar action buttons on main page cards
+8. Stats on hero should ONLY show numbers (tools count, blog post count)

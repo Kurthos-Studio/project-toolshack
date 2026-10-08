@@ -385,9 +385,17 @@ button:disabled,
 }
 
 .tool-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border, #e1e4e8);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  background: var(--color-background, #fff);
   position: relative;
   overflow: hidden;
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
 .tool-card::after {
@@ -402,9 +410,27 @@ button:disabled,
 }
 
 .tool-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 34px 70px rgba(16, 35, 49, 0.16);
-  border-color: rgba(16, 35, 49, 0.16);
+  border-color: var(--color-primary, #0969da);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.tool-card .eyebrow {
+  margin-bottom: 0.75rem;
+}
+
+.tool-card h3 {
+  margin: 0.5rem 0 1rem 0;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  color: var(--color-text-primary, #111);
+}
+
+.tool-card p {
+  margin: 0;
+  color: var(--color-text-secondary, #666);
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .tool-card-link {
