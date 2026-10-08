@@ -597,3 +597,350 @@ Tool Card (.tool-card):
 6. Both use eyebrow class for categories
 7. NO "Open tool" or similar action buttons on main page cards
 8. Stats on hero should ONLY show numbers (tools count, blog post count)
+
+## 🎨 Complete Design Consistency Guide (Read Before Modifying UI)
+
+**CRITICAL:** The entire website must maintain consistent styling. One design standard applies everywhere.
+
+### 1. Card Styling (Blog + Tools Cards)
+
+**BOTH blog-preview-card AND tool-card MUST BE IDENTICAL (except tool-card has ::after accent):**
+
+```css
+/* The Standard Card Template */
+.card-component {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border, #e1e4e8);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  background: var(--color-background, #fff);
+  /* position: relative; overflow: hidden; only for tool-card */
+}
+
+.card-component:hover {
+  border-color: var(--color-primary, #0969da);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.card-component .eyebrow {
+  margin: 0 0 0.75rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(16, 35, 49, 0.06);
+  color: var(--accent-2);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: fit-content;
+}
+
+.card-component h3 {
+  margin: 0.5rem 0 1rem 0;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  color: var(--color-text-primary, #111);
+}
+
+.card-component p {
+  margin: 0;
+  color: var(--color-text-secondary, #666);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.card-component .meta {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #666);
+  margin-top: auto;
+}
+```
+
+**Implementation:**
+- Blog: `.blog-preview-card` (no ::after)
+- Tools: `.tool-card` (has decorative ::after element for visual accent)
+
+### 2. Category/Label Styling (Eyebrow Class)
+
+**ALL categories/labels use ONLY `<p class="eyebrow">` - NEVER use span or custom classes:**
+
+```html
+✅ CORRECT everywhere:
+  <p class="eyebrow">Developer</p>
+  <p class="eyebrow">Security</p>
+  <p class="eyebrow">Design</p>
+
+❌ NEVER use:
+  <span class="blog-category">Developer</span>
+  <span class="category">Developer</span>
+  <span class="label">Developer</span>
+  <div class="tag">Developer</div>
+```
+
+**Where eyebrow appears:**
+- Hero section (e.g., "Overview")
+- Blog cards (category)
+- Tool cards (category)
+- Section headers (e.g., "How to use")
+- Ad slots (e.g., "Ad")
+- ALL must use identical styling
+
+### 3. Section Header Structure
+
+**EVERY section with a title + "View all" link MUST use this exact structure:**
+
+```html
+<section class="section">
+  <div class="section-header">
+    <div>
+      <h2>{Main Title}</h2>
+      <p>{Descriptive subtitle}</p>
+    </div>
+    <a href="{url}" class="link-arrow">View all {items} →</a>
+  </div>
+  <div class="{grid-class}">
+    {/* cards/items */}
+  </div>
+</section>
+```
+
+**CSS for section-header:**
+```css
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
+.section-header p {
+  color: #666;
+  margin: 0.5rem 0 0 0;
+}
+
+.link-arrow {
+  color: var(--color-primary, #0969da);
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  align-self: center;
+  transition: color 0.2s;
+}
+
+.link-arrow:hover {
+  color: var(--color-primary-dark, #0860ca);
+}
+```
+
+**Applied to:**
+- "Latest from the blog" section (has "View all posts →")
+- "Featured tools" section (has "View all tools →")
+- ANY future section listing items
+
+### 4. Spacing & Margins (Universal Rules)
+
+**Ad Slots:**
+```css
+.ad-slot {
+  margin-top: 1.5rem;      /* Space from section above */
+  margin-bottom: 1.5rem;   /* Space to next section */
+  background: linear-gradient(...);
+}
+
+.tool-shell .ad-slot {
+  margin-top: 0;           /* Grid handles spacing */
+  margin-bottom: 0;        /* Grid handles spacing */
+}
+```
+
+**Sections:**
+```css
+.section {
+  margin-top: 1.5rem;      /* Consistent spacing between sections */
+}
+
+.section h2 {
+  margin: 0 0 1rem;        /* Heading to content */
+}
+```
+
+**Cards in Grid:**
+```css
+.blog-preview-grid,
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;             /* Consistent card spacing */
+}
+```
+
+### 5. Button Styling (Tool Pages)
+
+**ONLY use `class="primary"` and `class="secondary"` - NEVER use "btn" prefix:**
+
+```html
+✅ CORRECT:
+  <div class="tool-actions">
+    <button type="button" class="primary">Main Action</button>
+    <button type="button" class="secondary">Secondary</button>
+    <button type="button" class="secondary">Copy</button>
+  </div>
+
+❌ WRONG:
+  <div class="field-grid">
+    <button class="btn btn-primary">Action</button>
+    <button class="btn btn-secondary">Secondary</button>
+    <button class="btn btn-tertiary">Tertiary</button>
+  </div>
+```
+
+**Container:** MUST be `<div class="tool-actions">` - NEVER use field-grid for buttons
+
+### 6. Main Page Design Checklist
+
+```
+Hero Section:
+☐ "Overview" eyebrow label
+☐ Main headline: "Useful tools that stay out of your way."
+☐ Subtitle: "Pick a tool, use it, move on."
+☐ CTA button: "Browse tools"
+☐ Stat cards: ONLY numeric (tool count + blog count)
+☐ NO descriptive stats like "Clean", "Fast", "Private"
+
+Blog Section:
+☐ section-header with h2 + subtitle + "View all posts" link
+☐ Blog cards use .blog-preview-card class
+☐ Cards are <a> links (whole card clickable)
+☐ Each card has eyebrow + h3 + excerpt + reading time
+☐ Grid uses blog-preview-grid class
+☐ Spacing: gap: 1.5rem between cards
+
+Tools Section:
+☐ section-header with h2 + subtitle + "View all tools" link
+☐ Tool cards use .tool-card class (NOT article, NOT with buttons)
+☐ Cards are <a> links (whole card clickable)
+☐ Each card has eyebrow + h3 + description
+☐ Grid uses tool-grid class
+☐ Spacing: gap: 1.5rem between cards
+☐ Structure MUST MATCH blog section exactly
+
+"Now" Section:
+☐ .section.tool-shell container
+☐ Content card on left (1.15fr width)
+☐ Ad slot on right (0.85fr width)
+☐ Ad slot inside grid has margin-top: 0, margin-bottom: 0
+☐ Ad slot aligns with content (no extra spacing)
+
+Footer Ad Slot:
+☐ margin-top: 1.5rem (space from content above)
+☐ margin-bottom: 1.5rem (space to footer)
+```
+
+### 7. Responsive Behavior
+
+**At 960px breakpoint and below:**
+```css
+@media (max-width: 960px) {
+  .hero-grid,
+  .tool-shell,
+  .card-grid,
+  .tool-grid,
+  .feature-grid,
+  .stat-grid {
+    grid-template-columns: 1fr;  /* Single column */
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .link-arrow {
+    align-self: flex-start;
+  }
+
+  .blog-preview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+**Keep consistent:**
+- Card padding stays 1.5rem
+- Gap between cards stays 1.5rem
+- Eyebrow styling identical
+- Hover effects work same way
+
+### 8. Color Consistency
+
+**Standard palette used everywhere:**
+```css
+--color-primary: #0969da           /* Blue links, hover states */
+--color-primary-dark: #0860ca      /* Hover dark */
+--color-border: #e1e4e8            /* Card borders */
+--color-background: #fff           /* Card background */
+--color-text-primary: #111         /* Headings */
+--color-text-secondary: #666       /* Descriptions */
+--accent-2: {category color}       /* Eyebrow text */
+```
+
+**Never hardcode colors** - use CSS variables for consistency
+
+### 9. Typography Consistency
+
+```
+Hero h1: clamp(2rem, 4vw, 3.5rem)
+Section h2: clamp(1.4rem, 2.5vw, 2rem)
+Card h3: 1.25rem
+Eyebrow: 0.8rem, uppercase, letter-spacing: 0.08em
+Description: 0.95rem
+Meta (reading time): 0.875rem
+```
+
+### 10. Checklist for Every UI Change
+
+Before committing ANY styling changes:
+
+```
+☐ Does it match existing similar components?
+☐ Are colors using CSS variables (not hardcoded)?
+☐ Are margins/padding consistent with rest of site?
+☐ Do hover effects match other interactive elements?
+☐ Is responsive behavior tested (mobile/tablet/desktop)?
+☐ Are eyebrow labels using <p class="eyebrow">?
+☐ Are cards full clickable links (not nested buttons)?
+☐ Do sections use section-header structure?
+☐ Are grids using consistent gap: 1.5rem?
+☐ Is ad slot spacing correct (1.5rem margin)?
+☐ Does it look professional and polished?
+☐ Will it pass AdSense approval (consistent design)?
+```
+
+---
+
+**Design Philosophy Summary:**
+
+> "One design standard, applied consistently everywhere. Blog cards, tool cards, sections, buttons, labels - all follow the same rules. This creates a professional appearance that demonstrates:
+> - Attention to detail
+> - Quality craftsmanship
+> - Professional standards
+> - Trust and credibility
+> 
+> Consistency = Professionalism = Trust = Google AdSense Approval ✨"
+
+**Last Updated:** Oct 8, 2026  
+**Enforced By:** AGENT.md (this file)  
+**Remember:** Consistency beats cleverness every time. When in doubt, copy the existing pattern.
