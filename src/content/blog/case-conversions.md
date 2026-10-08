@@ -27,7 +27,8 @@ First letter lowercase, then capitalize each new word.
 - Java methods
 - Most web development
 
-**Why?** Easy to read without special characters. Popular in programming since the 1960s.
+**Why?** 
+The term "camelCase" was coined in the 1990s when JavaScript emerged, named after the "humps" in the middle of variable names. It became the de facto standard in JavaScript because the language's creator Brendan Eich drew inspiration from Java, which preferred camelCase for readability without underscores. When code is dense on a single line, the visual "bumps" of capital letters make it easier to scan. It's now so ubiquitous in JavaScript that violating the convention immediately marks code as non-idiomatic, and most linters will flag violations automatically.
 
 ### 2. PascalCase (UpperCamelCase)
 Same as camelCase, but first letter is uppercase.
@@ -43,7 +44,8 @@ Same as camelCase, but first letter is uppercase.
 - React component names (must be capitalized)
 - C#, Java class definitions
 
-**Why?** Distinguishes class names from function names.
+**Why?** 
+PascalCase emerged as a convention to distinguish between class definitions and instances or functions. In statically-typed languages like Java and C#, this distinction is critical because classes are templates—starting with a capital letter makes it immediately obvious you're dealing with a type definition rather than a function or variable. This convention is so strong that in React, if you don't capitalize a component name, the framework won't recognize it as a component at all. The visual distinction prevents entire categories of bugs where developers accidentally treat classes as functions or vice versa.
 
 ### 3. snake_case
 Lowercase letters with underscores between words.
@@ -60,7 +62,8 @@ Lowercase letters with underscores between words.
 - Ruby on Rails
 - Constants in many languages
 
-**Why?** Very readable, especially in Python. Also used in URLs and file names.
+**Why?** 
+Snake_case became the standard in Python because Guido van Rossum (Python's creator) believed underscores are more readable than mixed capitalization, especially for non-English readers. This convention is so ingrained in Python culture that the official style guide (PEP 8) enforces it, and violating it marks code as "unpythonic." Interestingly, snake_case originated in environments where file systems were case-insensitive (like early Unix), making underscores the natural separator. The readability benefit is especially pronounced with long variable names, where snake_case_with_underscores flows more naturally than camelCaseWithMixedCapitalization to many people's eyes.
 
 ### 4. CONSTANT_CASE
 All uppercase with underscores.
@@ -76,7 +79,8 @@ All uppercase with underscores.
 - Environment variables
 - Configuration values
 
-**Why?** Signals to developers: "This is constant, do not modify it!"
+**Why?** 
+CONSTANT_CASE became the universal convention across virtually all programming languages as a visual warning: "This value should never change." In the early days of programming, accidentally modifying constants led to difficult-to-debug errors, so uppercase naming served as a psychological barrier against modification. This convention is so powerful that many languages now support true constants as language features, yet developers still use CONSTANT_CASE to signify immutability even when not technically enforced. Environment variables like DATABASE_PASSWORD in CONSTANT_CASE became standard practice for DevOps because it immediately signals to anyone reading logs or configuration that these are system-critical values.
 
 ### 5. kebab-case
 Lowercase with hyphens (dashes) between words.
@@ -93,7 +97,8 @@ Lowercase with hyphens (dashes) between words.
 - HTML attributes (some frameworks)
 - File names (sometimes)
 
-**Why?** Readable and SEO-friendly in URLs. Hyphens are acceptable in web context but not in programming variable names.
+**Why?** 
+Kebab-case became the web standard because URLs are fundamentally text strings, and hyphens are safer than underscores in URLs (historically, some systems treated underscores differently). Google's official SEO guidelines recommend hyphens in URLs to separate words, which led to kebab-case becoming the convention for SEO-friendly slugs. CSS adopted kebab-case because stylesheets weren't code—they were markup, so the convention felt natural alongside HTML. Interestingly, the term "kebab-case" didn't exist until the 2010s; developers joked about the hyphenated appearance looking like meat on a skewer, and the name stuck.
 
 ### 6. flatcase
 No separators between words, all lowercase.
@@ -109,7 +114,8 @@ No separators between words, all lowercase.
 - Some domain names
 - Outdated code (not recommended)
 
-**Why?** Rarely used now—it is hard to read!
+**Why?** 
+Flatcase was used in early computing when systems had severe character restrictions and limited display sizes. Mainframe systems of the 1960s-70s often forced all-uppercase or all-lowercase text, making flatcase the only option available. Modern programming moved away from flatcase because it's nearly impossible for humans to parse—your brain struggles to identify word boundaries without any visual cues. Modern linters and style guides explicitly prohibit flatcase because code is read far more often than it's written, and readability directly impacts bug rates and maintenance costs. It survives mainly in legacy systems and as a cautionary tale about why conventions matter.
 
 ## Which Case Should You Use?
 
