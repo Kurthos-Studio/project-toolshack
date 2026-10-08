@@ -5,6 +5,22 @@ import { blogPosts } from '../../data/blog';
 import { siteConfig } from '../../data/site';
 import '../../styles/blog.css';
 
+const POSTS_PER_PAGE = 5;
+
+// Get page number from URL parameters (default to 1)
+const currentPage = Math.max(1, parseInt(Astro.url.searchParams.get('page') || '1'));
+const totalPages = Math.ceil(blogPosts.length / POSTS_PER_PAGE);
+
+// Sort posts by date (newest first)
+const sortedPosts = blogPosts.sort(
+  (a, b) => new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()
+);
+
+// Get posts for current page
+const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+const endIndex = startIndex + POSTS_PER_PAGE;
+const postsForPage = sortedPosts.slice(startIndex, endIndex);
+
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'Blog',
@@ -28,30 +44,27 @@ const schema = {
   <section class="blog-container">
     <div class="blog-grid">
       {
-        blogPosts
-          .sort((a, b) => new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime())
-          .map((post) => (
-            <article class="blog-card">
-              <div class="blog-card-header">
-                <span class="blog-category">{post.category}</span>
-                <time class="blog-date" datetime={post.publishedDate}>
-                  {new Date(post.publishedDate).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </time>
-              </div>
-              <h2 class="blog-title">
-                <a href={`/blog/${post.slug}/`}>{post.title}</a>
-              </h2>
-              <p class="blog-excerpt">{post.excerpt}</p>
-              <div class="blog-card-footer">
-                <span class="blog-reading-time">{post.readingTime} min read</span>
-                <a href={`/blog/${post.slug}/`} class="blog-link">Read More →</a>
-              </div>
-            </article>
-          ))
+        postsForPage.map((post) => (
+          <article class="blog-card">
+            <div class="blog-card-header">
+              <time class="blog-date" datetime={post.publishedDate}>
+                {new Date(post.publishedDate).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </time>
+            </div>
+            <h2 class="blog-title">
+              <a href={`/blog/${post.slug}/`}>{post.title}</a>
+            </h2>
+            <p class="blog-excerpt">{post.excerpt}</p>
+            <div class="blog-card-footer">
+              <span class="blog-reading-time">{post.readingTime} min read</span>
+              <a href={`/blog/${post.slug}/`} class="blog-link">Read More →</a>
+            </div>
+          </article>
+        ))
       }
     </div>
 
@@ -59,4 +72,34 @@ const schema = {
       <AdSlot label="Blog Ad" />
     </aside>
   </section>
+
+  {
+    totalPages > 1 && (
+      <nav class="pagination" aria-label="Blog pagination">
+        {currentPage > 1 && (
+          <a href={`/blog/?page=${currentPage - 1}`} class="pagination-link pagination-prev">
+            ← Previous
+          </a>
+        )}
+
+        <div class="pagination-numbers">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <a
+              href={`/blog/?page=${page}`}
+              class={`pagination-number ${page === currentPage ? 'active' : ''}`}
+              aria-current={page === currentPage ? 'page' : undefined}
+            >
+              {page}
+            </a>
+          ))}
+        </div>
+
+        {currentPage < totalPages && (
+          <a href={`/blog/?page=${currentPage + 1}`} class="pagination-link pagination-next">
+            Next →
+          </a>
+        )}
+      </nav>
+    )
+  }
 </BaseLayout>

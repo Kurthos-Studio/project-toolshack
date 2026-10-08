@@ -29,21 +29,14 @@
 
 .blog-card-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 1rem;
   gap: 1rem;
 }
 
 .blog-category {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: var(--color-primary-light, #f0f4ff);
-  color: var(--color-primary, #0066ff);
-  border-radius: 4px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  white-space: nowrap;
+  display: none;
 }
 
 .blog-date {
@@ -107,6 +100,58 @@
   gap: 1rem;
 }
 
+/* Pagination styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 3rem;
+  padding: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.pagination-link,
+.pagination-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 4px;
+  color: var(--color-text-primary, #000);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  background: var(--color-surface, #fff);
+}
+
+.pagination-link:hover,
+.pagination-number:hover {
+  border-color: var(--color-primary, #0066ff);
+  color: var(--color-primary, #0066ff);
+  background: var(--color-primary-light, #f0f4ff);
+}
+
+.pagination-number.active {
+  background: var(--color-primary, #0066ff);
+  color: white;
+  border-color: var(--color-primary, #0066ff);
+  cursor: default;
+}
+
+.pagination-number.active:hover {
+  background: var(--color-primary, #0066ff);
+  color: white;
+}
+
+.pagination-numbers {
+  display: flex;
+  gap: 0.25rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .blog-container {
@@ -123,5 +168,17 @@
 
   .blog-title {
     font-size: 1.15rem;
+  }
+
+  .pagination {
+    gap: 0.25rem;
+    margin-top: 2rem;
+  }
+
+  .pagination-link,
+  .pagination-number {
+    min-width: 2rem;
+    height: 2rem;
+    font-size: 0.9rem;
   }
 }
