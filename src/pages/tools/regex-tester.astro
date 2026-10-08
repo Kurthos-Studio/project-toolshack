@@ -30,107 +30,193 @@ const schema = {
 
     <AdSlot label="Ad" />
 
-    <div class="tool-shell regex-shell">
+    <div class="tool-shell">
       <section class="tool-panel stack" data-regex-tool>
         <label>
+          Regex Method
+          <select data-method>
+            <option value="javascript" selected>JavaScript</option>
+            <option value="pcre">PCRE (Perl)</option>
+            <option value="python">Python</option>
+            <option value="php">PHP</option>
+          </select>
+          <span class="field-hint">Different regex flavors</span>
+        </label>
+
+        <label>
           Pattern
-          <input type="text" data-pattern placeholder="e.g., /\b\w+@\w+\.\w+\b/gi" value="/test/gi" />
-          <span class="field-hint">Enter regex with flags (e.g., /pattern/gi)</span>
+          <input type="text" data-pattern placeholder="e.g., /test/gi" value="/test/gi" />
+          <span class="field-hint">Format: /pattern/flags</span>
         </label>
 
         <label>
           Test Text
-          <textarea data-text placeholder="Enter text to test against the pattern...">Test 123 and another test 456</textarea>
+          <textarea data-text placeholder="Enter text to test...">Test 123 and another test 456</textarea>
         </label>
 
         <div class="tool-actions">
-          <button type="button" class="primary" data-test>Test Pattern</button>
+          <button type="button" class="primary" data-test>Test</button>
           <button type="button" class="secondary" data-clear>Clear</button>
         </div>
 
         <div class="result-panel">
           <p class="eyebrow">Results</p>
-          <div data-results style="min-height: 120px; padding: 0.75rem; background: var(--color-background); border-radius: 6px; font-family: monospace; font-size: 0.9rem; overflow-y: auto; white-space: pre-wrap; word-break: break-word;">
-            No matches yet
+          <div data-results style="min-height: 150px; padding: 0.75rem; background: var(--color-background); border-radius: 6px; font-family: monospace; font-size: 0.875rem; overflow-y: auto; white-space: pre-wrap; word-break: break-word; line-height: 1.5;">
+            No matches
           </div>
-          <p class="field-hint" data-message>Enter a pattern and text, then click Test Pattern.</p>
+          <p class="field-hint" data-message>Enter pattern and text</p>
         </div>
       </section>
     </div>
+
+    <section class="content-card">
+      <p class="eyebrow">Regex Syntax Reference</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div>
+          <h3>Character Classes</h3>
+          <dl style="font-size: 0.875rem;">
+            <dt style="font-family: monospace; font-weight: 600;">.</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Any character except newline</dd>
+            <dt style="font-family: monospace; font-weight: 600;">\\d</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Digit (0-9)</dd>
+            <dt style="font-family: monospace; font-weight: 600;">\\w</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Word character (a-z, A-Z, 0-9, _)</dd>
+            <dt style="font-family: monospace; font-weight: 600;">\\s</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Whitespace (space, tab, newline)</dd>
+            <dt style="font-family: monospace; font-weight: 600;">[abc]</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">a, b, or c</dd>
+            <dt style="font-family: monospace; font-weight: 600;">[a-z]</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Range from a to z</dd>
+            <dt style="font-family: monospace; font-weight: 600;">[^abc]</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">NOT a, b, or c</dd>
+          </dl>
+        </div>
+        <div>
+          <h3>Quantifiers</h3>
+          <dl style="font-size: 0.875rem;">
+            <dt style="font-family: monospace; font-weight: 600;">*</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">0 or more</dd>
+            <dt style="font-family: monospace; font-weight: 600;">+</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">1 or more</dd>
+            <dt style="font-family: monospace; font-weight: 600;">?</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">0 or 1</dd>
+            <dt style="font-family: monospace; font-weight: 600;">&#123;n&#125;</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Exactly n times</dd>
+            <dt style="font-family: monospace; font-weight: 600;">&#123;n,&#125;</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">n or more times</dd>
+            <dt style="font-family: monospace; font-weight: 600;">&#123;n,m&#125;</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Between n and m times</dd>
+          </dl>
+        </div>
+        <div>
+          <h3>Anchors</h3>
+          <dl style="font-size: 0.875rem;">
+            <dt style="font-family: monospace; font-weight: 600;">^</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Start of line/string</dd>
+            <dt style="font-family: monospace; font-weight: 600;">$</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">End of line/string</dd>
+            <dt style="font-family: monospace; font-weight: 600;">\\b</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Word boundary</dd>
+            <dt style="font-family: monospace; font-weight: 600;">\\B</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Non-word boundary</dd>
+            <dt style="font-family: monospace; font-weight: 600;">|</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">OR - alternation</dd>
+          </dl>
+        </div>
+        <div>
+          <h3>Groups & Flags</h3>
+          <dl style="font-size: 0.875rem;">
+            <dt style="font-family: monospace; font-weight: 600;">(abc)</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Capturing group</dd>
+            <dt style="font-family: monospace; font-weight: 600;">(?:abc)</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Non-capturing group</dd>
+            <dt style="font-family: monospace; font-weight: 600;">g</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Global match (find all)</dd>
+            <dt style="font-family: monospace; font-weight: 600;">i</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Case-insensitive</dd>
+            <dt style="font-family: monospace; font-weight: 600;">m</dt>
+            <dd style="margin-left: 1rem; margin-bottom: 0.75rem;">Multiline mode</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
 
     <RelatedTools currentSlug="regex-tester" />
   </section>
 
   <script is:inline>
     const root = document.querySelector('[data-regex-tool]');
+    const methodSel = root.querySelector('[data-method]');
+    const patternInp = root.querySelector('[data-pattern]');
+    const textInp = root.querySelector('[data-text]');
+    const testBtn = root.querySelector('[data-test]');
+    const clearBtn = root.querySelector('[data-clear]');
+    const resultsDiv = root.querySelector('[data-results]');
+    const messageDiv = root.querySelector('[data-message]');
 
-    if (root) {
-      const patternInput = root.querySelector('[data-pattern]');
-      const textInput = root.querySelector('[data-text]');
-      const testBtn = root.querySelector('[data-test]');
-      const clearBtn = root.querySelector('[data-clear]');
-      const resultsDiv = root.querySelector('[data-results]');
-      const message = root.querySelector('[data-message]');
-
-      function parseRegex(str) {
-        const match = str.match(/^\/(.*)\/([gimsuvy]*)$/);
-        if (match) {
-          return new RegExp(match[1], match[2]);
-        }
-        throw new Error('Invalid regex format. Use /pattern/flags');
-      }
-
-      function testPattern() {
-        try {
-          const pattern = parseRegex(patternInput.value || '/test/gi');
-          const text = textInput.value;
-          const matches = [...text.matchAll(pattern)];
-
-          if (matches.length === 0) {
-            resultsDiv.textContent = 'No matches found';
-            message.textContent = 'Pattern did not match any text.';
-            return;
-          }
-
-          let result = `Found ${matches.length} match${matches.length === 1 ? '' : 'es'}:\n\n`;
-
-          matches.forEach((match, i) => {
-            result += `Match ${i + 1}: "${match[0]}"\n`;
-            if (match.index !== undefined) {
-              result += `  Position: ${match.index}\n`;
-            }
-            if (match.groups) {
-              result += `  Groups: ${JSON.stringify(match.groups)}\n`;
-            }
-            if (match.length > 1) {
-              result += `  Captured: ${match.slice(1).join(', ')}\n`;
-            }
-            result += '\n';
-          });
-
-          resultsDiv.textContent = result;
-          message.textContent = `Pattern matched successfully.`;
-        } catch (e) {
-          resultsDiv.textContent = '';
-          message.textContent = `Error: ${e instanceof Error ? e.message : 'Unknown error'}`;
-        }
-      }
-
-      testBtn?.addEventListener('click', testPattern);
-      clearBtn?.addEventListener('click', () => {
-        patternInput.value = '/test/gi';
-        textInput.value = '';
-        resultsDiv.textContent = 'No matches yet';
-        message.textContent = 'Enter a pattern and text, then click Test Pattern.';
-      });
-
-      patternInput?.addEventListener('keyup', (e) => {
-        if (e.key === 'Enter') testPattern();
-      });
-
-      textInput?.addEventListener('keyup', (e) => {
-        if (e.ctrlKey && e.key === 'Enter') testPattern();
-      });
+    function parseRegex(str) {
+      const m = str.match(/^\/(.+?)\/([gimsuvy]*)$/);
+      if (m) return { pattern: m[1], flags: m[2] };
+      throw new Error('Use /pattern/flags');
     }
+
+    function testPattern() {
+      try {
+        const patStr = patternInp.value || '/test/gi';
+        const text = textInp.value;
+        
+        const parsed = parseRegex(patStr);
+        const regex = new RegExp(parsed.pattern, parsed.flags);
+        const matches = [...text.matchAll(regex)];
+
+        if (matches.length === 0) {
+          resultsDiv.textContent = 'No matches found';
+          messageDiv.textContent = 'No matches';
+          return;
+        }
+
+        let html = '<span style="color: #4a9eff; font-weight: 600;">Found ' + matches.length + ' match' + (matches.length !== 1 ? 'es' : '') + ':</span><br><br>';
+
+        matches.forEach((m, i) => {
+          html += '<span style="color: #90ee90;">Match ' + (i + 1) + ':</span> ';
+          html += '<span style="background-color: #ffd700; color: #000; font-weight: 600;">"' + m[0] + '"</span><br>';
+          if (m.index !== undefined) {
+            html += '<span style="color: #bbb;">  Pos: ' + m.index + '</span><br>';
+          }
+          if (m.length > 1) {
+            const groups = [];
+            for (let j = 1; j < m.length; j++) {
+              groups.push(m[j] === undefined ? '(undefined)' : m[j]);
+            }
+            html += '<span style="color: #dda0dd;">  Captured: ' + groups.join(', ') + '</span><br>';
+          }
+          html += '<br>';
+        });
+
+        resultsDiv.innerHTML = html;
+        messageDiv.textContent = 'Matched';
+      } catch (e) {
+        const errorMsg = e instanceof Error ? e.message : 'Unknown error';
+        resultsDiv.innerHTML = '<span style="color: #ff6b6b;">Error: ' + errorMsg + '</span>';
+        messageDiv.textContent = 'Error';
+      }
+    }
+
+    testBtn.addEventListener('click', testPattern);
+    clearBtn.addEventListener('click', () => {
+      patternInp.value = '/test/gi';
+      textInp.value = '';
+      resultsDiv.textContent = 'No matches';
+      messageDiv.textContent = 'Cleared';
+    });
+
+    patternInp.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') testPattern();
+    });
+
+    methodSel.addEventListener('change', () => {
+      resultsDiv.textContent = 'No matches';
+      messageDiv.textContent = 'Method changed';
+    });
   </script>
 </BaseLayout>

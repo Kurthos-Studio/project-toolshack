@@ -54,8 +54,11 @@ const schema = {
 
         <label>
           Quantity
-          <input type="number" data-quantity value="1" min="1" max="100" />
-          <span class="field-hint">Generate multiple UUIDs (max 100)</span>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <input type="range" data-quantity value="1" min="1" max="30" style="flex: 1;" />
+            <span data-quantity-display style="min-width: 3rem; text-align: center; font-weight: 600;">1</span>
+          </div>
+          <span class="field-hint">Generate 1-30 UUIDs</span>
         </label>
 
         <div class="tool-actions">
@@ -81,10 +84,16 @@ const schema = {
       const versionSelect = root.querySelector('[data-version]');
       const formatSelect = root.querySelector('[data-format]');
       const quantityInput = root.querySelector('[data-quantity]');
+      const quantityDisplay = root.querySelector('[data-quantity-display]');
       const generateBtn = root.querySelector('[data-generate]');
       const copyBtn = root.querySelector('[data-copy]');
       const output = root.querySelector('[data-output]');
       const message = root.querySelector('[data-message]');
+
+      // Update display when slider changes
+      quantityInput?.addEventListener('input', (e) => {
+        quantityDisplay.textContent = (e.target).value;
+      });
 
       function generateUUIDv4() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -128,7 +137,7 @@ const schema = {
         try {
           const version = versionSelect?.value || '4';
           const format = formatSelect?.value || 'standard';
-          const quantity = Math.min(Math.max(1, parseInt(quantityInput?.value || '1')), 100);
+          const quantity = Math.min(Math.max(1, parseInt(quantityInput?.value || '1')), 30);
 
           let uuids = [];
           for (let i = 0; i < quantity; i++) {
