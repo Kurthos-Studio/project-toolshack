@@ -1077,20 +1077,18 @@ quantityInput?.addEventListener('input', (e) => {
 - Background image upload: Optional overlay for custom branding
 - Contrast overlay: Maintains QR code scannability with background images
 - Download button: Exports QR code as PNG file
+- Default content: `https://tools.kurthos.app`
 
 **Technical Approach:**
 - Uses QRServer API for base QR generation (`https://api.qrserver.com/v1/create-qr-code/`)
 - Canvas-based rendering for format switching and background compositing
 - Two rendering modes:
-  - `generateSquareDots()`: Standard QR appearance (black squares)
-  - `generateRoundedCurves()`: Aesthetic variant with curved corner dots
-- Background image handling:
-  - Loaded via FileReader API
-  - Drawn to canvas before QR overlay
-  - Contrast overlay applied automatically: bright areas → white (200α), dark areas → black (220α)
+  - `generateSquareDots()`: Scales API image directly to canvas (pixel-perfect)
+  - `generateRoundedCurves()`: Pixel-level rendering with quadratic bezier curves
 
 **HTML Structure:**
 ```html
+<textarea data-content placeholder="https://tools.kurthos.app">https://tools.kurthos.app</textarea>
 <label>Format
   <select data-format>
     <option value="square" selected>Square Dots</option>
@@ -1103,31 +1101,33 @@ quantityInput?.addEventListener('input', (e) => {
 <button data-generate>Generate QR</button>
 <button data-clear-bg>Clear Background</button>
 <a data-download href="#" download="qr-code.png">Download PNG</a>
-<canvas data-qr-canvas></canvas>
+<canvas data-qr-canvas style="max-width: 100%; border: 1px solid var(--color-border); border-radius: 8px; display: block;"></canvas>
 ```
 
 **Event Handlers:**
-- File upload: Loads image, renders to canvas with contrast overlay, regenerates QR
+- File upload: Loads image via FileReader, renders to canvas with contrast overlay, regenerates QR
 - Clear Background: Resets `backgroundImage` to null, regenerates QR
 - Generate button: Fetches QR from API, renders in selected format, updates download link
 - Size/Format/Content changes: Update status message, require explicit Generate click to apply
 
 **Implementation Details:**
-- All binary data transfers use canvas: `canvas.toDataURL('image/png')` for download
-- Error handling: Catch file load errors and API failures, display in status
-- Format module size: `Math.floor(px / 29)` provides balanced proportions (29x29 QR matrix)
-- API URL: `https://api.qrserver.com/v1/create-qr-code/?size=` + px + 'x' + px + '&data=' + encodeURIComponent(text)
+- Canvas setup: Set width/height to match size slider value
+- Background handling: Draw image scaled to canvas, apply contrast overlay
+- Square format: Simple `ctx.drawImage(qrImage, 0, 0, px, px)` for accuracy
+- Rounded format: Per-pixel rendering with brightness detection and quadratic curves
 - Contrast detection: Uses brightness formula `(r*299 + g*587 + b*114) / 1000`
+- API URL: `https://api.qrserver.com/v1/create-qr-code/?size=` + px + 'x' + px + '&data=' + encodeURIComponent(text)
 
-**Testing Notes:**
-- ✅ Square Dots format displays correctly
-- ✅ Rounded Curves format displays correctly
+**Testing Results:**
+- ✅ Square Dots format displays correctly at all sizes
+- ✅ Rounded Curves format displays correctly with smooth curves
 - ✅ Format selector changes generate new QR code
 - ✅ Size slider updates QR code dimensions
 - ✅ Content textarea triggers status message on input
 - ✅ Download link contains valid PNG base64 data
 - ✅ Clear Background button resets to white background
-- File upload functionality tested via Playwright (manual file browser testing recommended)
+- ✅ QR code preview shows complete code (not partial)
+- ✅ Default content displays correctly: `https://tools.kurthos.app`
 
 ---
 
