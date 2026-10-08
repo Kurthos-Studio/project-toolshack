@@ -4,7 +4,6 @@ Every time you create an account on a website, your password doesn't get stored 
 
 But hashing is about far more than just passwords. It's the foundation of modern cryptography, blockchain technology, digital signatures, and data integrity verification. Understanding how hashing works is essential to understanding how modern systems keep data secure.
 
-## What Is Cryptographic Hashing?
 
 A hash function is an algorithm that converts any input (text, numbers, files) into a fixed-length string of characters called a hash. The magic of cryptographic hashing lies in three properties:
 

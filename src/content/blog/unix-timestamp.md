@@ -2,7 +2,6 @@
 
 Time seems simple: clocks tick, dates change, we schedule events. Yet for computers, time is deceptively complex. How do you represent time in a way that works across different time zones, daylight saving rules, and computer systems? How do you ensure that an event logged at 3 AM in Tokyo displays correctly in New York? The answer lies in Unix timestamps—a brilliant solution that has become the foundation of computing's relationship with time.
 
-## What Is a Unix Timestamp?
 
 A Unix timestamp (also called POSIX time, epoch time, or seconds since epoch) is a single number representing a specific moment in time. It counts the number of seconds that have elapsed since January 1, 1970, 00:00:00 UTC.
 

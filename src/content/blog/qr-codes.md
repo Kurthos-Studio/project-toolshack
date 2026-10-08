@@ -2,7 +2,6 @@
 
 You see them everywhere—restaurant menus, product packaging, advertisements. QR codes have become ubiquitous. But what exactly are they, and why are they so useful? Let us explore this underutilized technology.
 
-## What Is a QR Code?
 
 QR stands for "Quick Response." It is a 2D barcode—essentially a compact way to store information that any smartphone can read instantly.
 

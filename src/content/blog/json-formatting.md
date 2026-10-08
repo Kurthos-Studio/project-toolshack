@@ -2,7 +2,6 @@
 
 JSON (JavaScript Object Notation) is one of the most common data formats used in modern web development. Whether you're working with APIs, configuration files, or data storage, you'll encounter JSON regularly. But raw JSON can be hard to read. Let's explore why formatting matters and how to do it effectively.
 
-## Why JSON Formatting Matters
 
 When you receive JSON data from an API or database, it often comes as a single long line—what developers call "minified" JSON. This format saves space and transfers faster, but it's nearly impossible for humans to read.
 

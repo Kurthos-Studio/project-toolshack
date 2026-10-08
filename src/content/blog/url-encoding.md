@@ -2,7 +2,6 @@
 
 URLs are everywhere, yet most people never think about what's actually happening when they click a link or use a search engine. Behind every web address is a carefully structured encoding system that determines what characters are safe, which must be escaped, and how information travels across the internet.
 
-## What Is URL Encoding?
 
 URL encoding (also called "percent encoding") is the process of converting characters into a format that's safe to transmit over the internet. Some characters have special meaning in URLs (like `?`, `&`, `=`), while others are simply not allowed. When you need to include these characters as data rather than as URL structure, they must be encoded.
 

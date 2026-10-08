@@ -2,7 +2,6 @@
 
 If you have ever looked at code, you have probably noticed that variable names follow different patterns. Why does one piece of code use `firstName` and another use `first_name`? There is actually a good reason! Let us explore the world of text case conventions.
 
-## Why Case Conventions Matter
 
 Case conventions are like grammar rules for code. They:
 - Make code **readable** for other developers

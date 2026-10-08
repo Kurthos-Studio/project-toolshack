@@ -4,7 +4,6 @@ Imagine you're building a global application used by millions of people across t
 
 This is where Universally Unique Identifiers (UUIDs), also known as Globally Unique Identifiers (GUIDs), become essential. They're everywhere in modern software—from your database primary keys to cloud service identifiers—yet most developers use them without understanding how they actually work.
 
-## What Are UUIDs and GUIDs?
 
 A UUID is a 128-bit identifier, typically displayed as a 36-character string with five groups separated by hyphens:
 

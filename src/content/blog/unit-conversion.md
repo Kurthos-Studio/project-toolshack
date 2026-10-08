@@ -2,7 +2,6 @@
 
 Every day, we convert units without thinking about it. How many centimeters is 6 feet? What's 98 degrees Fahrenheit in Celsius? How much is 2.5 kilograms in pounds? These conversions are so common that we often don't appreciate how fascinating the history and science behind them actually are.
 
-## What Is Unit Conversion?
 
 Unit conversion is the process of expressing a measurement in one set of units in terms of another. It sounds simple, but it's fundamental to science, engineering, cooking, travel, fitness, and countless other fields. Without standardized conversions, global communication and commerce would be impossible.
 

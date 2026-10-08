@@ -4,7 +4,6 @@ Regular expressions—often shortened to "regex"—are one of the most powerful 
 
 Behind every regex is a fascinating history of pattern matching, a universal language spoken by programmers across Python, JavaScript, Java, Ruby, and dozens of other languages. Understanding regex is understanding one of computer science's most elegant solutions to a universal problem: "How do I find or validate text patterns?"
 
-## What Are Regular Expressions?
 
 A regular expression is a sequence of characters that defines a pattern used to match and manipulate text. Rather than looking for exact string matches, regex allows you to describe rules that text must follow.
 
